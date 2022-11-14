@@ -83,8 +83,55 @@ export class FunctionHandler {
     return jsFunction
   }
 
+
   parseRuntimeProcessImplementation(s: any, gh: GraphHandler): CallableFunction|null {
-    return null;
+    const [mapping,] = gh.match(null,$rdf.sym(`${prefixes.fno}implementation`),s)
+    const parameterMappings = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}parameterMapping`),null).map(st=>st.object)
+    const returnMappings = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}returnMapping`),null).map(st=>st.object)
+    // const [f,] = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}function`),null).map(st => st.object) // TODO: delete?
+    // const [parameters] = gh.match(f,$rdf.sym(`${prefixes.fno}expects`),null).map(st => st.object); // TODO: delete?
+    // const [outputs] = gh.match(f,$rdf.sym(`${prefixes.fno}returns`),null).map(st => st.object); // TODO: delete?
+    const [baseCommand, ] = gh.match(s,$rdf.sym(`${prefixes.fnoi}baseCommand`),null).map(st => st.object)
+
+    // Position Parameter Mappings
+    const positionParameterMappings =parameterMappings.filter(pm =>
+        gh.match(pm,$rdf.sym(`${prefixes.rdf}type`),$rdf.sym(`${prefixes.fnom}PositionParameterMapping`))
+            .length > 0
+    )
+
+    const positionParameters: PositionParameter[] = positionParameterMappings.map(ppm => {
+      const [position] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}implementationParameterPosition`),null).map(st=>st.object).map(o=>o.value);
+      const [functionParameter] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}functionParameter`),null).map(st=>st.object).map(o=>o.value);
+      // TODO: add fno:type
+      return {
+        iri: functionParameter,
+        position,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+    // TODO: Property Parameter Mappings
+
+    // TODO: Return Mappings
+    // Position Parameter Mappings
+
+    const outputs: Output[] = returnMappings.map(rm => {
+      const [functionOutput] = gh.match(rm,$rdf.sym(`${prefixes.fnom}functionOutput`),null).map(st=>st.object).map(o=>o.value);
+      // TODO: add fno:type
+      return {
+        iri: functionOutput,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+    // TODO: create executable RTP
+    const rtpInstance = new RuntimeProcess(s.value,
+        positionParameters,
+        [], // TODO: Property Parameter Mappings
+        outputs,
+        [baseCommand]
+        )
+    return (args?:any) => {
+      return rtpInstance.execute(args)
+    }
   }
 
 
