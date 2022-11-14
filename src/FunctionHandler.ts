@@ -8,9 +8,10 @@ import prefixes from './prefixes';
 import { Term } from 'rdf-js';
 import { ImplementationHandler } from './handlers/ImplementationHandler';
 import {JavaScriptHandler} from "./handlers/JavaScriptHandler";
-import {JavaScriptFunction, RuntimeProcess} from "./models/Implementation";
+import {JavaScriptFunction, Output, PositionParameter, RuntimeProcess} from "./models/Implementation";
 import {Statement} from "rdflib";
 import {RuntimeProcessHandler} from "./handlers/RuntimeProcessHandler";
+
 
 type DependencyInputs = {
   type: "inputs",
@@ -135,7 +136,7 @@ export class FunctionHandler {
   }
 
 
-    dynamicallyLoadImplementations() {
+  dynamicallyLoadImplementations() {
 
     // "Factory", containing a parser and handler class for each FnO Implementation subclass
     const implementationFactory = {
@@ -186,11 +187,10 @@ export class FunctionHandler {
               }
             });
       })
-
   }
 
   async executeFunction(fn: Function, args: ArgumentMap) {
-    let handler = this.getImplementationViaMappings(fn);
+    let handler: Composition | null = this.getImplementationViaMappings(fn);
     if (handler) {
       return this.implementationHandler.executeImplementation(handler.id, args);
     }
