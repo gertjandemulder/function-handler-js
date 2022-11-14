@@ -5,12 +5,18 @@
   "main": "example-client.js",
   "scripts": {
     "test": "ts-mocha 'src/**/*.test.ts'",
+    "test:fno2cwl": "ts-mocha 'src/FnO2CWL.test.ts'",
+    "test:fno2cwl:watch": "ts-mocha 'src/FnO2CWL.test.ts' -w --watch-files src/FnO2CWL.test.ts",
     "build:typescript": "npx tsc index.ts",
     "test:fno2cwl": "ts-mocha 'src/FnO2CWL.test.ts'",
     "test:fno2cwl:watch": "ts-mocha 'src/FnO2CWL.test.ts' -w --watch-files src/FnO2CWL.test.ts",
     "build:typescript": "npx tsc index.ts",
     "setup:download-rmlmapper": "curl -L https://github.com/RMLio/rmlmapper-java/releases/download/v4.11.0/rmlmapper.jar --output rmlmapper.jar",
-    "generate:uml": "tsuml2 --glob \"src/**/!(*.d|*.spec).ts\" -m -o \"./doc/img/diag.svg\""
+    "generate:uml:all": "tsuml2 --glob \"src/**/!(*.d|*.spec).ts\" -m -o \"./doc/img/all.svg\"",
+    "generate:uml:models": "tsuml2 --glob \"src/models/!(*.d|*.spec).ts\" -m -o \"./doc/img/models.svg\"",
+    "generate:uml:handlers": "tsuml2 --glob \"src/handlers/!(*.d|*.spec).ts\" -m -o \"./doc/img/handlers.svg\"",
+    "generate:uml:factories": "tsuml2 --glob \"src/factories/!(*.d|*.spec).ts\" -m -o \"./doc/img/factories.svg\"",
+    "generate:uml": "npm run generate:uml:all; npm run generate:uml:models; npm run generate:uml:handlers; npm run generate:uml:factories"
   },
   "author": "Lander Noterman <lander.noterman@ugent.be>",
   "contributors": [
@@ -26,7 +32,7 @@
     "ldfetch": "^1.2.4",
     "left-pad": "^1.3.0",
     "mkdirp": "^0.5.6",
-    "n3": "^1.16.2",
+    "n3": "^1.16.3",
     "node-resolve-dependency-graph": "^1.3.7",
     "npm-programmatic": "0.0.10",
     "php-parser": "^3.0.3",
