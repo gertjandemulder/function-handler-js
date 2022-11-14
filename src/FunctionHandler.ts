@@ -90,7 +90,7 @@ export class FunctionHandler {
 
     dynamicallyLoadImplementations() {
 
-    // "Factory", containing a parser and handlerclass for each FnO Implementation subclass
+    // "Factory", containing a parser and handler class for each FnO Implementation subclass
     const implementationFactory = {
       JavaScriptFunction: {
         parser: this.parseJavaScriptFunctionImplementation,
@@ -113,20 +113,6 @@ export class FunctionHandler {
      * @param s
      */
     const extractSubjectFromStatement = (s: Statement) => s.subject;
-
-    // Implementation: JavaScriptFunction
-    const jsImplementationOnJSCallable = Object.fromEntries(
-        filterImplementationResources('JavaScriptFunction')
-            .map(extractSubjectFromStatement)
-            .map(s => [s.value, this.parseJavaScriptFunctionImplementation(s, this.graphHandler)])
-    );
-
-    // Implementation: RuntimeProcess // TODO
-    const rtpImplementationOnRtpCallable = Object.fromEntries(
-        filterImplementationResources('RuntimeProcess')
-            .map(extractSubjectFromStatement)
-            .map(s => [s.value, this.parseRuntimeProcessImplementation(s, this.graphHandler)])
-    );
 
     // Load implementations into the implementation handler.
     Object.keys(implementationFactory)
