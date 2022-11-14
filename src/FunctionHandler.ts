@@ -8,6 +8,9 @@ import prefixes from './prefixes';
 import { Term } from 'rdf-js';
 import { ImplementationHandler } from './handlers/ImplementationHandler';
 import {JavaScriptHandler} from "./handlers/JavaScriptHandler";
+import {JavaScriptFunction, RuntimeProcess} from "./models/Implementation";
+import {Statement} from "rdflib";
+import {RuntimeProcessHandler} from "./handlers/RuntimeProcessHandler";
 
 type DependencyInputs = {
   type: "inputs",
@@ -80,29 +83,79 @@ export class FunctionHandler {
     return jsFunction
   }
 
-
-  dynamicallyLoadImplementations() {
-    // Get fnoi:Implementation resources
-    // TMP: fixed Implementation class
-    const ic = 'JavaScriptFunction';
-    const irs = this.graphHandler.match(null,$rdf.sym(`${prefixes.rdf}type`),$rdf.sym(`${prefixes.fnoi}${ic}`))
-        .map(st => st.subject);
-    const jsImplementationOnJSFunctionObject = Object.fromEntries(
-        irs.map(s => [s.value, this.parseJavaScriptFunctionImplementation(s, this.graphHandler)])
-    )
-
-    // Load implementations
-    Object.entries(jsImplementationOnJSFunctionObject)
-        // ir: implementation resource; io: implementation object
-        .forEach(([ir, io]) => {
-          // implementation object, io, can be null (e.g. when implementation could not be loaded from the function graph)
-          if(io) {
-            this.implementationHandler.loadImplementation(ir, new JavaScriptHandler(), {fn: io})
-          }
-        }
-    )
+  parseRuntimeProcessImplementation(s: any, gh: GraphHandler): CallableFunction|null {
+    return null;
   }
-  
+
+
+    dynamicallyLoadImplementations() {
+
+    // "Factory", containing a parser and handlerclass for each FnO Implementation subclass
+    const implementationFactory = {
+      JavaScriptFunction: {
+        parser: this.parseJavaScriptFunctionImplementation,
+        handlerClass: JavaScriptHandler
+      },
+      RuntimeProcess: {
+        parser: this.parseRuntimeProcessImplementation,
+        handlerClass: RuntimeProcessHandler
+      }
+    }
+    /**
+     * Filters function graph for given Implementation class
+     * @param ic: Implementation classname (e.g. JavaScriptFunction, RuntimeProcess, etc.)
+     */
+    const filterImplementationResources = (ic: string) =>
+        this.graphHandler.match(null,$rdf.sym(`${prefixes.rdf}type`),$rdf.sym(`${prefixes.fnoi}${ic}`));
+
+    /**
+     * Extract subject property from given statement
+     * @param s
+     */
+    const extractSubjectFromStatement = (s: Statement) => s.subject;
+
+    // Implementation: JavaScriptFunction
+    const jsImplementationOnJSCallable = Object.fromEntries(
+        filterImplementationResources('JavaScriptFunction')
+            .map(extractSubjectFromStatement)
+            .map(s => [s.value, this.parseJavaScriptFunctionImplementation(s, this.graphHandler)])
+    );
+
+    // Implementation: RuntimeProcess // TODO
+    const rtpImplementationOnRtpCallable = Object.fromEntries(
+        filterImplementationResources('RuntimeProcess')
+            .map(extractSubjectFromStatement)
+            .map(s => [s.value, this.parseRuntimeProcessImplementation(s, this.graphHandler)])
+    );
+
+    // Load implementations into the implementation handler.
+    Object.keys(implementationFactory)
+        // For each implementation class (e.g. JavaScriptFunction, RuntimeProcess, etc.)
+      .forEach((ic)=>{
+        // Get the resource parser and handler for the current implementation class
+        const  {parser, handlerClass} = implementationFactory[ic];
+        // Filter the implementation resources for the current implementation class
+        filterImplementationResources(ic)
+            // Extract the subject term
+            .map(extractSubjectFromStatement)
+            .forEach(ir => {
+              // Parse the implementation
+              const irCallable = parser(ir,this.graphHandler);
+              // Initialize the handler that will execute the parsed implementation
+              const handler = new handlerClass();
+              if(irCallable) {
+                // If the implementation is successfully parsed, load it into the implementation handler
+                this.implementationHandler.loadImplementation(
+                    ir.value,
+                    handler,
+                    {fn: irCallable}
+                )
+              }
+            });
+      })
+
+  }
+
   async executeFunction(fn: Function, args: ArgumentMap) {
     let handler = this.getImplementationViaMappings(fn);
     if (handler) {
