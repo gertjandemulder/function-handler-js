@@ -7,6 +7,7 @@ import { flat as flatten, resolve } from 'node-resolve-dependency-graph/lib';
 import prefixes from './prefixes';
 import { Term } from 'rdf-js';
 import { ImplementationHandler } from './handlers/ImplementationHandler';
+import {JavaScriptHandler} from "./handlers/JavaScriptHandler";
 
 type DependencyInputs = {
   type: "inputs",
@@ -38,6 +39,7 @@ export class FunctionHandler {
 
   async addFunctionResource(iri: string, localValue: LocalValue | null = null) {
     await this.graphHandler.addGraph(iri, localValue);
+    this.dynamicallyLoadImplementations();
   }
 
   async getFunction(iri: string): Promise<Function> {
@@ -48,6 +50,59 @@ export class FunctionHandler {
     return new Function(term);
   }
 
+  /** Example
+   * fns:sumImplementation rdf:type fno:Implementation, fnoi:JavaScriptImplementation, fnoi:JavaScriptFunction ;
+   *         doap:release fns:sumImplementationRelease .
+   *
+   * fns:sumImplementationRelease doap:file-release fns:sumImplementationReleaseFile .
+   *
+   * fns:sumImplementationReleaseFile ex:value " function sum(a, b) {   return a + b; } " .
+   * @param s: subject of the fnoi:Implementation resource
+   * @param gh: GraphHandler
+   */
+  parseJavaScriptFunctionImplementation(s: any, gh: GraphHandler): CallableFunction|null {
+    let jsFunction: CallableFunction | null = null
+    try {
+      const [implementationReleaseFileResource,] = gh.match(s,$rdf.sym(`${prefixes.doap}release`),null)
+      if(!implementationReleaseFileResource)
+        // No implementation present in the functiongraph
+        return null;
+      const [doapReleaseFile, ] = gh.match(implementationReleaseFileResource.object, null, null);
+      const [jsCodeResource, ] = gh.match(doapReleaseFile.object, $rdf.sym(`${prefixes.ex}value`),null);
+      // Note: using eval() to load the plaintext function is dangerous! TODO: better approach for loading in plain text functions
+      // ref: https://developer.mozilla.org/en-US/docs/web/javascript/reference/global_objects/eval#eval_as_a_string_defining_function_requires_and_as_prefix_and_suffix
+      const plainTextJS = jsCodeResource.object.value;
+      jsFunction = eval(`(${plainTextJS})`);
+    }
+    catch (error) {
+      console.warn('Error while parsing JS Implementation: ' + error)
+    }
+    return jsFunction
+  }
+
+
+  dynamicallyLoadImplementations() {
+    // Get fnoi:Implementation resources
+    // TMP: fixed Implementation class
+    const ic = 'JavaScriptFunction';
+    const irs = this.graphHandler.match(null,$rdf.sym(`${prefixes.rdf}type`),$rdf.sym(`${prefixes.fnoi}${ic}`))
+        .map(st => st.subject);
+    const jsImplementationOnJSFunctionObject = Object.fromEntries(
+        irs.map(s => [s.value, this.parseJavaScriptFunctionImplementation(s, this.graphHandler)])
+    )
+
+    // Load implementations
+    Object.entries(jsImplementationOnJSFunctionObject)
+        // ir: implementation resource; io: implementation object
+        .forEach(([ir, io]) => {
+          // implementation object, io, can be null (e.g. when implementation could not be loaded from the function graph)
+          if(io) {
+            this.implementationHandler.loadImplementation(ir, new JavaScriptHandler(), {fn: io})
+          }
+        }
+    )
+  }
+  
   async executeFunction(fn: Function, args: ArgumentMap) {
     let handler = this.getImplementationViaMappings(fn);
     if (handler) {
