@@ -5,7 +5,12 @@
   "main": "example-client.js",
   "scripts": {
     "test": "ts-mocha 'src/**/*.test.ts'",
-    "build:typescript": "npx tsc index.ts"
+    "build:typescript": "npx tsc index.ts",
+    "test:fno2cwl": "ts-mocha 'src/FnO2CWL.test.ts'",
+    "test:fno2cwl:watch": "ts-mocha 'src/FnO2CWL.test.ts' -w --watch-files src/FnO2CWL.test.ts",
+    "build:typescript": "npx tsc index.ts",
+    "setup:download-rmlmapper": "curl -L https://github.com/RMLio/rmlmapper-java/releases/download/v4.11.0/rmlmapper.jar --output rmlmapper.jar",
+    "generate:uml": "tsuml2 --glob \"src/**/!(*.d|*.spec).ts\" -m -o \"./doc/img/diag.svg\""
   },
   "author": "Lander Noterman <lander.noterman@ugent.be>",
   "contributors": [
@@ -42,6 +47,7 @@
     "mocha": "^8.4.0",
     "ts-mocha": "^8.0.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.7.4"
+    "tsuml2": "^0.6.1",
+    "typescript": "^4.1.3"
   }
 }
