@@ -64,6 +64,10 @@ export class ImplementationHandler {
     return out;
   }
 
+  getLoadedImplementations(): {[implementationId: string]: InternalImplementation,} {
+    return this._loadedImplementations;
+  }
+
   async executeImplementation(implementationId: string, args: ArgumentMap) {
     return this._loadedImplementations[implementationId].handler.executeFunction(args, this._loadedImplementations[implementationId].options);
   }
