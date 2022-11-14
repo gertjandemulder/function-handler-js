@@ -21,7 +21,7 @@
 ################################################################################
 # CWL Inputs -> FnO Parameters
 
-# echo input
+# ls input
 t_ls:pathParameter
   a   fno:Parameter ;
   fno:type   xsd:string;
@@ -31,7 +31,7 @@ t_ls:pathParameter
 ################################################################################
 # Command Outputs -> FnO Outputs
 
-# echo output
+# ls output
 t_ls:returnOutput
   a   fno:Output ;
   fno:type   xsd:string;
@@ -91,4 +91,4 @@ t_ls:Mapping
     fno:parameterMapping t_ls:pathParameterMapping ;
     fno:returnMapping t_ls:returnOutputMapping ;
     # fno:methodMapping <..> ; # TODO: delete?
-.
+.🤒
