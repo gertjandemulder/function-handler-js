@@ -61,8 +61,6 @@ t_ls:Implementation
   a fno:Implementation, fnoi:RuntimeProcess ;
   fnoi:baseCommand "ls" ;
   fnoi:platform <#dev-platform> ;
-  # TODO: arguments
-
 .
 
 
