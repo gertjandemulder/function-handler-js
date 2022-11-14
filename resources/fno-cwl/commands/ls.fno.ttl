@@ -91,4 +91,4 @@ t_ls:Mapping
     fno:parameterMapping t_ls:pathParameterMapping ;
     fno:returnMapping t_ls:returnOutputMapping ;
     # fno:methodMapping <..> ; # TODO: delete?
-.🤒
+.
