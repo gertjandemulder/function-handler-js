@@ -7,7 +7,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { RuntimeProcessHandler } from './handlers/RuntimeProcessHandler';
 import exp from "constants";
-
+import * as $rdf from 'rdflib';
+import {PositionParameter, PropertyParameter, RuntimeProcess} from "./models/Implementation";
 function readFile(path) {
   return fs.readFileSync(path, { encoding: 'utf-8' });
 }
@@ -30,6 +31,18 @@ const ns = {
   t_echo: "http://gddmulde.be/echo.cwl#",
   t_uc: "http://gddmulde.be/uppercase.cwl#",
   t_ls: "http://gddmulde.be/commands/unix/ls#"
+}
+
+const testPositionParameter = (positionParameters: PositionParameter[], expectedParameterValue: PositionParameter) => {
+  expect(positionParameters.map(p => p.iri)).to.contain(expectedParameterValue.iri);
+  expect(positionParameters.filter(p=>p.iri===expectedParameterValue.iri)[0].position).to.equal(expectedParameterValue.position.toString());
+  expect(positionParameters.filter(p=>p.iri===expectedParameterValue.iri)[0]._type).to.equal(expectedParameterValue._type);
+}
+
+const testPropertyParameter = (propertyParameters: PropertyParameter[], expectedParameterValue: PropertyParameter) => {
+  expect(propertyParameters.map(p => p.iri)).to.contain(expectedParameterValue.iri);
+  expect(propertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0].property).to.equal(expectedParameterValue.property);
+  expect(propertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0]._type).to.equal(expectedParameterValue._type);
 }
 
 describe('RuntimeProcess', function () {
