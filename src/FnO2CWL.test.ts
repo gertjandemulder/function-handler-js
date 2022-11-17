@@ -46,6 +46,45 @@ const testPropertyParameter = (propertyParameters: PropertyParameter[], expected
 }
 
 describe('RuntimeProcess', function () {
+  it('Correctly parses a RuntimeProcess (fno-cwl/commands/lsl.fno.ttl))',async ()=>{
+    const handler = new FunctionHandler();
+    // Load FnO descriptions
+    const iriFunctionGraph = prefix(ns.gdm, 'commandGraph');
+    await handler.addFunctionResource(
+        iriFunctionGraph,
+        {
+          type: 'string',
+          contents: readFile(path.resolve(dirResources, 'commands', 'lsl.fno.ttl')),
+          contentType: 'text/turtle'
+        },
+        false
+    );
+
+    const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_ls}Implementation`))
+    // Parse implementation into a RuntimeProcess
+    const rtp: RuntimeProcess = handler.parseRuntimeProcessImplementation(imp.subject, handler.graphHandler);
+
+    // Expected: t_ls:pathParameter - position: 0
+    const expectedPathParameter: PositionParameter = {
+      iri: `${ns.t_ls}pathParameter`,
+      position: 0,
+      _type: "TODO" // TODO!
+    }
+
+    // Expected: t_ls:sizeOptionParameter - property: -s
+    const expectedSizeOptionParameter : PropertyParameter = {
+      iri: `${ns.t_ls}sizeOptionParameter`,
+      property: "-s",
+      _type: "TODO" // TODO: fns:option
+    }
+
+    // Tests
+    expect(rtp.positionParameters).to.have.length(1);
+    expect(rtp.propertyParameters).to.have.length(1);
+    testPositionParameter(rtp.positionParameters, expectedPathParameter);
+    testPropertyParameter(rtp.propertyParameters, expectedSizeOptionParameter);
+  });
+
   it('Can dynamically load and execute an fnoi:RuntimeProcess (fno-cwl/commands/ls.fno.ttl))',async ()=>{
     const handler = new FunctionHandler();
 
