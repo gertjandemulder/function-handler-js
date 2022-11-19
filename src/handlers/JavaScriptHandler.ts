@@ -1,5 +1,5 @@
 import { Handler } from './Handler';
-import prefixes from '../prefixes';
+import {prefixes} from '../prefixes';
 
 export class JavaScriptHandler extends Handler {
     constructor() {

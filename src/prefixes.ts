@@ -28,8 +28,21 @@ export class Namespace {
         this._iri = iri;
     }
 
-    prefix(...args: any[]): NamedNode {
-        return $rdf.sym([this._iri, ...args].join(''));
+    /**
+     * If arg is provided, this function prefixes the given argument with the namespace and returns it as a NamedNode.
+     * Otherwise, the namespace is returned as a NamedNode.
+     * @param arg
+     */
+    toNamedNode(arg?: string): NamedNode {
+        return $rdf.sym(prefix(this._iri, arg));
+    }
+
+    get prefix(): string {
+        return this._prefix;
+    }
+
+    get iri(): string {
+        return this._iri;
     }
 }
 

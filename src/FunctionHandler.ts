@@ -4,7 +4,7 @@ import { ArgumentMap, ReturnMap } from './handlers/Handler';
 import * as $rdf from 'rdflib';
 import { flat as flatten, resolve } from 'node-resolve-dependency-graph/lib';
 
-import prefixes from './prefixes';
+import {prefixes} from './prefixes';
 import { Term } from 'rdf-js';
 import { ImplementationHandler } from './handlers/ImplementationHandler';
 import {JavaScriptHandler} from "./handlers/JavaScriptHandler";

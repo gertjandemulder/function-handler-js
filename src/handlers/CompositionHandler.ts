@@ -1,5 +1,5 @@
 import { Handler } from './Handler';
-import prefixes from '../prefixes';
+import {prefixes} from '../prefixes';
 import { ImplementationHandler } from './ImplementationHandler';
 import { Function } from '../models';
 
