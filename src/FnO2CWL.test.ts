@@ -44,10 +44,10 @@ const testPropertyParameter = (propertyParameters: PropertyParameter[], expected
   expect(propertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0].property).to.equal(expectedParameterValue.property);
   expect(propertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0]._type).to.equal(expectedParameterValue._type);
 }
-
-describe('RuntimeProcess', function () {
-  it('Correctly parses a RuntimeProcess (fno-cwl/commands/lsl.fno.ttl))',async ()=>{
-    const handler = new FunctionHandler();
+describe('RuntimeProcess: lsl.fno.ttl', function () {
+  let handler;
+  before(async ()=>{
+    handler = new FunctionHandler();
     // Load FnO descriptions
     const iriFunctionGraph = prefix(ns.gdm, 'commandGraph');
     await handler.addFunctionResource(
@@ -59,6 +59,8 @@ describe('RuntimeProcess', function () {
         },
         false
     );
+  })
+  it('Correctly parses a RuntimeProcess (fno-cwl/commands/lsl.fno.ttl))',async ()=>{
 
     const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_ls}Implementation`))
     // Parse implementation into a RuntimeProcess
@@ -84,7 +86,8 @@ describe('RuntimeProcess', function () {
     testPositionParameter(rtp.positionParameters, expectedPathParameter);
     testPropertyParameter(rtp.propertyParameters, expectedSizeOptionParameter);
   });
-
+})
+describe('RuntimeProcess', function () {
   it('Can dynamically load and execute an fnoi:RuntimeProcess (fno-cwl/commands/ls.fno.ttl))',async ()=>{
     const handler = new FunctionHandler();
 
