@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { FunctionHandler } from './FunctionHandler';
 import { } from 'mocha';
 import { JavaScriptHandler } from './handlers/JavaScriptHandler';
-import prefixes from './prefixes';
+import {prefixes} from './prefixes';
 import * as fs from 'fs';
 import * as path from 'path';
 import { RuntimeProcessHandler } from './handlers/RuntimeProcessHandler';
