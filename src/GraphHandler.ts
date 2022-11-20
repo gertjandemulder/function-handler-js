@@ -1,7 +1,7 @@
 import * as $rdf from "rdflib";
-import ldfetch from "ldfetch";
-import {NamedNode, Quad, Quad_Object, Term} from "rdf-js";
 import {Namespace} from "rdflib";
+import ldfetch from "ldfetch";
+import {Quad, Term} from "rdf-js";
 import {Writer} from "n3";
 
 var RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
@@ -10,6 +10,16 @@ export type LocalValue = {
     type: "string" | "quads"
     contents: string | Quad[],
     contentType?: string
+}
+
+interface ISubFilters<K> {
+    s: (v:K) => any[]
+    p: (v:K) => any[]
+    o: (v:K) => any[]
+    sp: (s: K, p: K) => any[]
+    po: (p: K, o: K) => any[]
+    so: (s: K, o: K) => any[]
+    spo: (s: K, p:K, o: K) => any[]
 }
 
 export class GraphHandler {
@@ -29,6 +39,16 @@ export class GraphHandler {
 
     match(s, p, o) {
         return this._graph.match(s, p, o);
+    }
+
+    filter: ISubFilters<$rdf.NamedNode> = {
+        s: (v) => this._graph.match(v,null,null),
+        p: (v) => this._graph.match(null, v, null),
+        o: (v) => this._graph.match(null, null, v),
+        sp: (s,p) => this._graph.match(s,p,null),
+        so: (s,o) => this._graph.match(s, null, o),
+        po: (p, o) => this._graph.match(null, p, o),
+        spo: (s,p, o) => this._graph.match(s, p, o),
     }
 
     get graph(): any {
