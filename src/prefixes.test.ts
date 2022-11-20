@@ -8,7 +8,7 @@ describe('Namespaces', () => {
 
         Object.entries(namespaces)
             .forEach(([p,nso])=>{
-                expect(nso.toNamedNode().value)
+                expect(nso('').value)
                     .to.equal($rdf.sym(prefixes[p]).value)
             })
     })
@@ -16,7 +16,7 @@ describe('Namespaces', () => {
     it('Correctly creates a NamedNode for a given string', () => {
         const pref = 'rdf'
         const attr = 'type'
-        expect(namespaces[pref].toNamedNode(attr).value)
+        expect(namespaces[pref](attr).value)
             .to.equal($rdf.sym(`${prefixes.rdf}${attr}`).value);
     })
 })

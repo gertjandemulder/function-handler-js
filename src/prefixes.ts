@@ -1,5 +1,5 @@
 import * as $rdf from 'rdflib';
-import {NamedNode} from "rdflib";
+import {NamedNode, Namespace} from "rdflib";
 
 export const prefixes = {
     rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
@@ -19,31 +19,7 @@ export function prefix(...args) {
     return args.join('');
 }
 
-export class Namespace {
-    private _prefix: string;
-    private _iri: string;
-
-    constructor(prefix: string, iri: string) {
-        this._prefix = prefix;
-        this._iri = iri;
-    }
-
-    /**
-     * If arg is provided, this function prefixes the given argument with the namespace and returns it as a NamedNode.
-     * Otherwise, the namespace is returned as a NamedNode.
-     * @param arg
-     */
-    toNamedNode(arg?: string): NamedNode {
-        return $rdf.sym(prefix(this._iri, arg));
-    }
-
-    get prefix(): string {
-        return this._prefix;
-    }
-
-    get iri(): string {
-        return this._iri;
-    }
-}
-
-export const namespaces = Object.fromEntries(Object.entries(prefixes).map(([p,i])=>[p, new Namespace(p,i)]));
+export const namespaces = Object.fromEntries(
+    Object.entries(prefixes)
+        .map(([p,i])=>[p, Namespace(i)])
+);
