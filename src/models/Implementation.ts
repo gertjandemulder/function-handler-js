@@ -19,9 +19,9 @@ export interface Output extends PropertyParameter {}
 
 export class Implementation extends TermClass {
     protected callable: Function;
-    protected positionParameters: PositionParameter[];
-    protected propertyParameters: PropertyParameter[];
-    protected outputs: Output[];
+    private _positionParameters: PositionParameter[];
+    private _propertyParameters: PropertyParameter[];
+    private _outputs: Output[];
 
     constructor(iri,
                 positionParameters: PositionParameter[] = [],
@@ -32,11 +32,24 @@ export class Implementation extends TermClass {
         this.callable = () => {
             throw Error('Callable Not Implemented!');
         }
-        this.positionParameters = positionParameters;
-        this.positionParameters
+        this._positionParameters = positionParameters;
+        this._positionParameters
             .sort((a: PositionParameter, b: PositionParameter) => a.position < b.position ? -1 : 1)
-        this.propertyParameters = propertyParameters;
-        this.outputs = outputs;
+        this._propertyParameters = propertyParameters;
+        this._outputs = outputs;
+    }
+
+
+    get positionParameters(): PositionParameter[] {
+        return this._positionParameters;
+    }
+
+    get propertyParameters(): PropertyParameter[] {
+        return this._propertyParameters;
+    }
+
+    get outputs(): Output[] {
+        return this._outputs;
     }
 
     execute(args?: any): any {
