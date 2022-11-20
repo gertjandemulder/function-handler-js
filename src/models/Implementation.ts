@@ -86,9 +86,10 @@ export class RuntimeProcess extends Implementation {
 
     async execute(args?: any): Promise<any> {
         const positionParameterValues = this.positionParameters.map(p => args[p.iri])
+        const propertyParameterValuePairs = this.propertyParameters.map(p => [p.property, args[p.iri]].join(' '))
 
         // <baseCommand> [propertyParameter, ...] [positionParameter, ...]
-        const cmd = `${this.baseCommand} ${positionParameterValues.join(' ')}` // TODO: add propertyparameter
+        const cmd = `${this.baseCommand} ${propertyParameterValuePairs} ${positionParameterValues.join(' ')}` // TODO: add propertyparameter
         const execPromise = new Promise((resolve, reject) => {
             exec(cmd, (error, stdout, stderr) => {
                 if (error) {

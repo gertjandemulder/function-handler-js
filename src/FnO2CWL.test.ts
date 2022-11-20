@@ -60,7 +60,7 @@ describe('RuntimeProcess: lsl.fno.ttl', function () {
         false
     );
   })
-  it('Correctly parses a RuntimeProcess (fno-cwl/commands/lsl.fno.ttl))',async ()=>{
+  it('Correctly parses a RuntimeProcess',async ()=>{
 
     const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_ls}Implementation`))
     // Parse implementation into a RuntimeProcess
@@ -85,6 +85,59 @@ describe('RuntimeProcess: lsl.fno.ttl', function () {
     expect(rtp.propertyParameters).to.have.length(1);
     testPositionParameter(rtp.positionParameters, expectedPathParameter);
     testPropertyParameter(rtp.propertyParameters, expectedSizeOptionParameter);
+  });
+
+  it('Correctly executes RuntimeProcess',async ()=>{
+
+    handler.dynamicallyLoadImplementations();
+    const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_ls}Implementation`))
+    // Parse implementation into a RuntimeProcess
+    const rtp: RuntimeProcess = handler.parseRuntimeProcessImplementation(imp.subject, handler.graphHandler);
+
+    // Expected: t_ls:pathParameter - position: 0
+    const expectedPathParameter: PositionParameter = {
+      iri: `${ns.t_ls}pathParameter`,
+      position: 0,
+      _type: "TODO" // TODO!
+    }
+
+    // Expected: t_ls:sizeOptionParameter - property: -s
+    const expectedSizeOptionParameter : PropertyParameter = {
+      iri: `${ns.t_ls}sizeOptionParameter`,
+      property: "-s",
+      _type: "TODO" // TODO: fns:option
+    }
+
+    // Tests
+    expect(rtp.positionParameters).to.have.length(1);
+    expect(rtp.propertyParameters).to.have.length(1);
+    testPositionParameter(rtp.positionParameters, expectedPathParameter);
+    testPropertyParameter(rtp.propertyParameters, expectedSizeOptionParameter);
+
+    // Function resource
+    const f = await handler.getFunction(prefix(ns.t_ls, 'Function'));
+    expect(f).not.to.be.null;
+    expect(f.id).not.to.be.null;
+
+    // Execution
+    const argMap = {
+      [prefix(ns.t_ls, 'pathParameter')]:'./resources/fno-cwl/commands/ls_test_dir',
+      [prefix(ns.t_ls, 'sizeOptionParameter')]: '',
+    }
+
+    //
+    const functionOutput = await handler.executeFunction(f, argMap);
+    expect(functionOutput).not.to.be.null;
+    expect(functionOutput[prefix(ns.t_ls, 'returnOutput')]).not.to.be.null;
+
+    expect(functionOutput[prefix(ns.t_ls, 'returnOutput')]).to.be.equal(
+`total 24
+8 a.txt
+8 b.txt
+8 c.txt
+`
+    )
+
   });
 })
 describe('RuntimeProcess', function () {

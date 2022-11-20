@@ -1,5 +1,4 @@
-import * as $rdf from 'rdflib';
-import {NamedNode, Namespace} from "rdflib";
+import { Namespace} from "rdflib";
 
 export const prefixes = {
     rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",

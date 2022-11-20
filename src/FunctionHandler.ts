@@ -15,8 +15,10 @@ import {
   PropertyParameter,
   RuntimeProcess
 } from "./models/Implementation";
-import {Statement} from "rdflib";
+import { Statement} from "rdflib";
+
 import {RuntimeProcessHandler} from "./handlers/RuntimeProcessHandler";
+import {NamedNode} from "rdflib/lib/tf-types";
 
 
 type DependencyInputs = {
@@ -322,6 +324,7 @@ export class FunctionHandler {
     const parameterMappings = this.getObjects(mapping.term, $rdf.sym(`${prefixes.fno}parameterMapping`));
     const positionArgs = {};
     const propertyArgs = {};
+
     parameterMappings.forEach((pMapping) => {
       let parameter = this.getObjects(pMapping, $rdf.sym(`${prefixes.fnom}functionParameter`));
       if (parameter.length === 0) {
@@ -341,20 +344,32 @@ export class FunctionHandler {
         console.warn(`More types for ${parameter.value} than expected (1). Picking one at random.`);
       }
       type = type[0] || null;
+
+      // Process Property Parameters
+      if (this.graphHandler.isA(pMapping, namespaces.fnom('PropertyParameterMapping'))){
+        const properties = this.graphHandler.filter.sp(pMapping, namespaces.fnom('implementationProperty'))
+            .map((st: Statement) => st.object)
+            .map((o) => o.value);
+        properties.forEach((property)=>{
+          addToResult(propertyArgs, property, predicate.value, type);
+        })
+
+        // throw new Error('Unsupported if not positionparametermapping');
+
+      }
+
+      // Process Position Parameters
       if (this.graphHandler.match(pMapping, $rdf.sym(`${prefixes.rdf}type`), $rdf.sym(`${prefixes.fnom}PositionParameterMapping`)).length > 0) {
         const positions = this.getObjects(pMapping, $rdf.sym(`${prefixes.fnom}implementationParameterPosition`)).map(o => o.value);
         positions.forEach((position) => {
           addToResult(positionArgs, position, predicate.value, type);
         });
-      } else if (this.graphHandler.match(pMapping, namespaces.rdf('type'),namespaces.fnom('PropertyParameterMapping')).length > 0) {
-        // TODO: IMPLEMENT PROCESSING PROPERTY PARAMETER VALUE
-        const stophere=0;
-        throw new Error('Unsupported if not positionparametermapping');
       }
     });
 
     return {
       positionArgs,
+      propertyArgs
     };
 
     function addToResult(result, key, value, type) {
