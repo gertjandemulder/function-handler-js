@@ -9,6 +9,7 @@ import { RuntimeProcessHandler } from './handlers/RuntimeProcessHandler';
 import exp from "constants";
 import * as $rdf from 'rdflib';
 import {PositionParameter, PropertyParameter, RuntimeProcess} from "./models/Implementation";
+import {JavaScriptExpressionHandler} from "./handlers/JavaScriptExpressionHandler";
 function readFile(path) {
   return fs.readFileSync(path, { encoding: 'utf-8' });
 }
@@ -270,21 +271,22 @@ describe('fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', () => {
     expect(fUppercase.id).not.be.null;
   });
 
-  it.skip('Correctly loads the concrete workflow',async () => {
-
-    // IRIs
-    const iriWf = prefix(ns.wf, 'Function');
-    const iriEcho = prefix(ns.t_echo, 'Function');
-    const iriUppercase = prefix(ns.t_uc, 'Function');
-
-    // FnO Function objects
-    const fWf = await handler.getFunction(iriWf);
-    const fEcho = await handler.getFunction(iriEcho);
-    const fUppercase = await handler.getFunction(iriUppercase);
-
+  it('Correctly loads the concrete workflow',async () => {
+    // Load implementations
     handler.dynamicallyLoadImplementations();
+
+    // Test loaded implementations
     const loadedImplementations = handler.implementationHandler.getLoadedImplementations();
-    const stophere=0;
+
+    expect(loadedImplementations).not.to.be.empty;
+
+    expect(Object.keys(loadedImplementations))
+        .to.contain(prefix(ns.t_echo, 'Implementation'))
+        .to.contain(prefix(ns.t_uc, 'JSExpressionImplementation'));
+
+    expect(Object.values(loadedImplementations).map(li => li.handler.constructor.name))
+        .to.contain('JavaScriptExpressionHandler')
+        .to.contain('RuntimeProcessHandler')
   });
 
   it.skip('Correclty executes the concrete workflow', async ()=>{
