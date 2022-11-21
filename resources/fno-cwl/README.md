@@ -3,6 +3,11 @@
 *[CLT]: Command Line Tool
 *[ET]: Expression Tool
 
+- [ ] update all example namespaces to
+    ```turtle
+    @prefix ex:                   <http://www.example.com#> .
+    ```
+
 ## Commands
 
 Directory [`./commands`](commands/) consists of the following:
