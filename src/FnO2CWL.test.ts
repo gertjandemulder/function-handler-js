@@ -373,7 +373,8 @@ describe('Workflow test: fno-cwl/example01/cwl2fno-expected-result-concrete-wf.t
         .not.to.be.null;
     expect(functionOutput[prefix(ns.t_echo,'out')]).to.equal('abc\n')
 
-  })
+  });
+
   it('Correclty executes the concrete workflow', async ()=>{
 
     handler.dynamicallyLoadImplementations();
@@ -387,44 +388,6 @@ describe('Workflow test: fno-cwl/example01/cwl2fno-expected-result-concrete-wf.t
     const wfResult = await handler.executeFunction(fWf, wfArgMap);
     expect(wfResult[prefix(ns.wf, 'wf_output')]).to.equal('ABC\n');
 
-    // // Instantiate implementation handlers
-    // const iriEchoImplementation = prefix(ns.t_echo, 'Implementation');
-    // const iriUppercaseImplementation = prefix(ns.t_uc, 'Implementation');
-    //
-    // // Implementation by RuntimeProcessHandler
-    // handler.implementationHandler.loadImplementation(
-    //     iriEchoImplementation,
-    //     rtpHandler,
-    //     { baseCommand: ["echo"] }
-    // );
-    //
-    // // Implementation by JavascriptHandler
-    // handler.implementationHandler.loadImplementation(
-    //     iriUppercaseImplementation,
-    //     jsHandler,
-    //     { fn: jsFunctionImplementations.uppercase }
-    // );
-    //
-    // // Test echo output
-    // const fnEchoArgMap = {
-    //   [prefix(ns.t_echo, 'message')]: 'abc'
-    // }
-    // const fnEchoResult = await handler.executeFunction(fEcho, fnEchoArgMap);
-    // expect(fnEchoResult[prefix(ns.t_echo, 'out')]).to.equal('abc\n');
-    //
-    // // Test uppercase output
-    // const fnUppercaseArgMap = {
-    //   [prefix(ns.t_uc, 'message')]: 'abc'
-    // }
-    // const fnUppercaseResult = await handler.executeFunction(fUppercase, fnUppercaseArgMap)
-    // expect(fnUppercaseResult[prefix(ns.t_uc, 'uppercase_message')]).to.equal('ABC');
-    //
-    // // Test result of execution the function composition
-    // const wfArgMap = {
-    //   [prefix(ns.wf, 'message')]: 'abc'
-    // }
-    // const wfResult = await handler.executeFunction(fWf, wfArgMap);
-    // expect(wfResult[prefix(ns.wf, 'wf_output')]).to.equal('ABC\n');
   });
 
 
