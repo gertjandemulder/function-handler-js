@@ -140,6 +140,7 @@ describe('RuntimeProcess: lsl.fno.ttl', function () {
 
   });
 })
+
 describe('RuntimeProcess', function () {
   it('Can dynamically load and execute an fnoi:RuntimeProcess (fno-cwl/commands/ls.fno.ttl))',async ()=>{
     const handler = new FunctionHandler();
@@ -181,9 +182,48 @@ c.txt
 `
     )
   });
-
 });
-describe('fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', () => { // the tests container
+
+describe('JavaScriptExpression', () => {
+  const dirContainerResources = path.resolve(dirResources, 'example01');
+  let handler: FunctionHandler;
+  before(async ()=>{
+    handler = new FunctionHandler();
+    // Load FnO descriptions
+    const iriFunctionGraph = prefix(ns.gdm, 'commandGraph');
+    await handler.addFunctionResource(
+        iriFunctionGraph,
+        {
+          type: 'string',
+          contents: readFile(path.resolve(dirContainerResources, 'cwl2fno-expected-result-concrete-wf.ttl')),
+          contentType: 'text/turtle'
+        },
+        false
+    );
+  })
+
+  it('Correctly executes JavaScriptExpression: uppercase',async () => {
+
+    // IRIs
+    const iriUppercase = prefix(ns.t_uc, 'Function');
+    handler.dynamicallyLoadImplementations();
+    // FnO Function objects
+    const fUppercase = await handler.getFunction(iriUppercase);
+    // Argument values
+    const argMap = {
+      [prefix(ns.t_uc, 'message')]: 'abc'
+    }
+    // Execute
+    const fnOutput = await handler.executeFunction(fUppercase, argMap);
+    // Test output
+    expect(fnOutput).not.to.be.null;
+    expect(fnOutput[prefix(ns.t_uc, 'returnOutput')]).not.to.be.null;
+    expect(fnOutput[prefix(ns.t_uc, 'returnOutput')]).to.equal('ABC');
+
+  });
+});
+
+describe('fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', () => {
 
   const dirContainerResources = path.resolve(dirResources, 'example01');
   let handler: FunctionHandler;
@@ -228,26 +268,6 @@ describe('fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', () => { //
 
     expect(fUppercase).not.to.be.null;
     expect(fUppercase.id).not.be.null;
-  });
-
-  it('Correctly executes JavaScriptExpression: uppercase',async () => {
-
-    // IRIs
-    const iriUppercase = prefix(ns.t_uc, 'Function');
-    handler.dynamicallyLoadImplementations();
-    // FnO Function objects
-    const fUppercase = await handler.getFunction(iriUppercase);
-    // Argument values
-    const argMap = {
-      [prefix(ns.t_uc, 'message')]: 'abc'
-    }
-    // Execute
-    const fnOutput = await handler.executeFunction(fUppercase, argMap);
-    // Test output
-    expect(fnOutput).not.to.be.null;
-    expect(fnOutput[prefix(ns.t_uc, 'returnOutput')]).not.to.be.null;
-    expect(fnOutput[prefix(ns.t_uc, 'returnOutput')]).to.equal('ABC');
-
   });
 
   it.skip('Correctly loads the concrete workflow',async () => {
