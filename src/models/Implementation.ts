@@ -75,6 +75,44 @@ export class JavaScriptImplementation extends Implementation {
 export class JavaScriptFunction extends JavaScriptImplementation {
 }
 
+export class JavaScriptExpression extends JavaScriptImplementation {
+    private readonly _expression: string;
+
+    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[], expression: string) {
+        super(iri, positionParameters, propertyParameters, outputs);
+        this._expression = expression;
+    }
+
+    get expression(): string {
+        return this._expression;
+    }
+
+    /**
+     * Wraps the expression inside a JS function, and executes it.
+     * @param args
+     */
+    async execute(args?: any): Promise<any> {
+        const propertyParameterValuePairs = Object.fromEntries(this.propertyParameters.map(p => [p.property, args[p.iri]]))
+
+        const header = this.propertyParameters.map(x => x.property).join(', ');
+        const strFunc = `function f(${header})
+         {
+            const ___out = ${this.expression};
+            return ___out;
+        }`
+
+        const jsFunction = eval(`(${strFunc})`);
+        const result = {};
+        // TODO: the following DOES NOT assign the values to the function arguments by key (it is merely the order of propertyParameterValuePairs's values)
+        const fnResult = jsFunction.apply(null, Object.values(propertyParameterValuePairs))
+        // Assumption: there is only one output // TODO: generalize to multiple outputs
+        if (this.outputs.length > 0) {
+            result[this.outputs[0].iri] = fnResult;
+        }
+        return result;
+    }
+}
+
 export class RuntimeProcess extends Implementation {
     protected baseCommand: string[];
 
