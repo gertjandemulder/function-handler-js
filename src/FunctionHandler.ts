@@ -9,6 +9,7 @@ import { Term } from 'rdf-js';
 import { ImplementationHandler } from './handlers/ImplementationHandler';
 import {JavaScriptHandler} from "./handlers/JavaScriptHandler";
 import {
+  JavaScriptExpression,
   JavaScriptFunction,
   Output,
   PositionParameter,
@@ -19,6 +20,7 @@ import { Statement} from "rdflib";
 
 import {RuntimeProcessHandler} from "./handlers/RuntimeProcessHandler";
 import {NamedNode} from "rdflib/lib/tf-types";
+import {JavaScriptExpressionHandler} from "./handlers/JavaScriptExpressionHandler";
 
 
 type DependencyInputs = {
@@ -94,12 +96,114 @@ export class FunctionHandler {
     return jsFunction
   }
 
+  parseJavaScriptExpressionImplementationv1(s: any, gh: GraphHandler): CallableFunction|null {
+    let jsFunction: CallableFunction | null = null
+    try {
+      const [implementationReleaseFileResource,] = gh.match(s,$rdf.sym(`${prefixes.doap}release`),null)
+      if(!implementationReleaseFileResource)
+          // No implementation present in the functiongraph
+        return null;
+
+      const { doap, ex } = namespaces;
+      const [dfr,] = gh.filter.sp(implementationReleaseFileResource.object, doap('file-release'))
+      const [expressionResource,] = gh.filter.sp(dfr.object, ex('value'))
+      const expressionValue = expressionResource.object.value
+      // Note: using eval() to load the plaintext function is dangerous! TODO: better approach for loading in plain text functions
+      // ref: https://developer.mozilla.org/en-US/docs/web/javascript/reference/global_objects/eval#eval_as_a_string_defining_function_requires_and_as_prefix_and_suffix
+      jsFunction = eval(`(${expressionValue})`);
+    }
+    catch (error) {
+      console.warn('Error while parsing JS Implementation: ' + error)
+    }
+    return jsFunction
+  }
+
+  /**
+   * Parses implementation description into a JavaScriptExpression
+   * @param s: implementation resource
+   * @param gh: GraphHandler
+   */
+  parseJavaScriptExpressionImplementation(s: any, gh: GraphHandler): JavaScriptExpression {
+    const [mapping,] = gh.match(null,$rdf.sym(`${prefixes.fno}implementation`),s);
+    const parameterMappings = gh.filter.sp(mapping.subject, $rdf.sym(`${prefixes.fno}parameterMapping`)).map(st=>st.object)
+    const returnMappings = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}returnMapping`),null).map(st=>st.object)
+
+    // JSExpression specific
+    const [implementationReleaseFileResource,] = gh.match(s,$rdf.sym(`${prefixes.doap}release`),null)
+    const { doap, ex } = namespaces;
+    const [dfr,] = gh.filter.sp(implementationReleaseFileResource.object, doap('file-release'))
+    const [expressionResource,] = gh.filter.sp(dfr.object, ex('value'))
+    const expression = expressionResource.object.value
+
+    // Position Parameter Mappings
+    const positionParameterMappings = parameterMappings.filter(pm =>
+        gh.match(pm,$rdf.sym(`${prefixes.rdf}type`),$rdf.sym(`${prefixes.fnom}PositionParameterMapping`))
+            .length > 0
+    )
+
+    const positionParameters: PositionParameter[] = positionParameterMappings.map(ppm => {
+      const [position] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}implementationParameterPosition`),null).map(st=>st.object).map(o=>o.value);
+      const [functionParameter] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}functionParameter`),null).map(st=>st.object).map(o=>o.value);
+
+      return {
+        iri: functionParameter,
+        position,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // Property Parameter Mappings
+    const propertyParameterMappings = gh.filter.po(
+        $rdf.sym(`${prefixes.rdf}type`),
+        $rdf.sym(`${prefixes.fnom}PropertyParameterMapping`)
+    )
+
+    // Property Parameters
+    const propertyParameters: PropertyParameter[] = propertyParameterMappings.map(ppm => {
+      const [property] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}implementationProperty`)).map(st => st.object).map(o => o.value)
+      const [functionParameter] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}functionParameter`))
+          .map(st => st.object).map(o => o.value)
+      const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`))
+          .map(st => st.object)
+          .map(o => o.value)
+      // TODO: add fno:type
+      return {
+        iri: predicate, // TODO [!!!] set iri to value of fno:predciate ; _AND_ CHECK WHETHER THIS IS DONE IN ALL PARSERS
+        property,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // Outputs
+    const outputs: Output[] = returnMappings.map(rm => {
+      const [functionOutput] = gh.match(rm,$rdf.sym(`${prefixes.fnom}functionOutput`),null).map(st=>st.object).map(o=>o.value);
+      // TODO: add fno:type
+      return {
+        iri: functionOutput,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // Create (executable) JSExpression instance
+    const jsExpressionInstance = new JavaScriptExpression(s.value,
+        positionParameters,
+        propertyParameters,
+        outputs,
+        expression
+    )
+    return jsExpressionInstance
+  }
+
 
   createImplementationCallable(imp: Implementation): CallableFunction|null {
-    if (imp instanceof RuntimeProcess)
+    if (
+        imp instanceof RuntimeProcess
+        || imp instanceof JavaScriptExpression
+    )
       return (args?) => imp.execute(args)
     if(imp instanceof JavaScriptFunction)
       throw Error('Not Yet Implemented')
+
     return null;
   }
 
@@ -176,6 +280,10 @@ export class FunctionHandler {
       JavaScriptFunction: {
         parser: this.parseJavaScriptFunctionImplementation,
         handlerClass: JavaScriptHandler
+      },
+      JavaScriptExpression: {
+        parser: (s: any, gh: GraphHandler) => this.createImplementationCallable(this.parseJavaScriptExpressionImplementation(s, gh)),
+        handlerClass: JavaScriptExpressionHandler
       },
       RuntimeProcess: {
         parser: (s: any, gh: GraphHandler) => this.createImplementationCallable(this.parseRuntimeProcessImplementation(s, gh)),
