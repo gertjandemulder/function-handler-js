@@ -19,6 +19,9 @@ export interface ArgumentMap {
     positionArgs?: {
         [index: string]: string[]
     }
+    propertyArgs?: {
+        [index: string]: string[]
+    }
 }
 
 /**

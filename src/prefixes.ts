@@ -1,4 +1,6 @@
-const prefixes = {
+import { Namespace} from "rdflib";
+
+export const prefixes = {
     rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     rdfs: "http://www.w3.org/2000/01/rdf-schema#",
     xsd: "http://www.w3.org/2001/XMLSchema#",
@@ -12,4 +14,11 @@ const prefixes = {
     fns: "http://example.com/functions#"
 };
 
-export default prefixes;
+export function prefix(...args) {
+    return args.join('');
+}
+
+export const namespaces = Object.fromEntries(
+    Object.entries(prefixes)
+        .map(([p,i])=>[p, Namespace(i)])
+);

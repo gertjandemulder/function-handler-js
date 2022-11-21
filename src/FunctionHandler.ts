@@ -1,12 +1,25 @@
 import { Composition, Function, Implementation, Mapping, Predicate } from './models';
-import { GraphHandler, LocalValue } from './GraphHandler';
+import {GraphHandler, LocalValue} from './GraphHandler';
 import { ArgumentMap, ReturnMap } from './handlers/Handler';
 import * as $rdf from 'rdflib';
 import { flat as flatten, resolve } from 'node-resolve-dependency-graph/lib';
 
-import prefixes from './prefixes';
+import {namespaces, prefixes} from './prefixes';
 import { Term } from 'rdf-js';
 import { ImplementationHandler } from './handlers/ImplementationHandler';
+import {JavaScriptHandler} from "./handlers/JavaScriptHandler";
+import {
+  JavaScriptFunction,
+  Output,
+  PositionParameter,
+  PropertyParameter,
+  RuntimeProcess
+} from "./models/Implementation";
+import { Statement} from "rdflib";
+
+import {RuntimeProcessHandler} from "./handlers/RuntimeProcessHandler";
+import {NamedNode} from "rdflib/lib/tf-types";
+
 
 type DependencyInputs = {
   type: "inputs",
@@ -26,9 +39,10 @@ type DependencyFunction = {
     [predicate: string]: string[]
   }
 }
+export type ImplementationRecord = Record<string, Implementation>;
 
 export class FunctionHandler {
-  private graphHandler: GraphHandler;
+  graphHandler: GraphHandler;
   implementationHandler: ImplementationHandler;
 
   constructor() {
@@ -36,8 +50,10 @@ export class FunctionHandler {
     this.implementationHandler = new ImplementationHandler();
   }
 
-  async addFunctionResource(iri: string, localValue: LocalValue | null = null) {
+  async addFunctionResource(iri: string, localValue: LocalValue | null = null, loadImplementations = true) {
     await this.graphHandler.addGraph(iri, localValue);
+    if (loadImplementations)
+      this.dynamicallyLoadImplementations();
   }
 
   async getFunction(iri: string): Promise<Function> {
@@ -48,8 +64,166 @@ export class FunctionHandler {
     return new Function(term);
   }
 
+  /** Example
+   * fns:sumImplementation rdf:type fno:Implementation, fnoi:JavaScriptImplementation, fnoi:JavaScriptFunction ;
+   *         doap:release fns:sumImplementationRelease .
+   *
+   * fns:sumImplementationRelease doap:file-release fns:sumImplementationReleaseFile .
+   *
+   * fns:sumImplementationReleaseFile ex:value " function sum(a, b) {   return a + b; } " .
+   * @param s: subject of the fnoi:Implementation resource
+   * @param gh: GraphHandler
+   */
+  parseJavaScriptFunctionImplementation(s: any, gh: GraphHandler): CallableFunction|null {
+    let jsFunction: CallableFunction | null = null
+    try {
+      const [implementationReleaseFileResource,] = gh.match(s,$rdf.sym(`${prefixes.doap}release`),null)
+      if(!implementationReleaseFileResource)
+        // No implementation present in the functiongraph
+        return null;
+      const [doapReleaseFile, ] = gh.match(implementationReleaseFileResource.object, null, null);
+      const [jsCodeResource, ] = gh.match(doapReleaseFile.object, $rdf.sym(`${prefixes.ex}value`),null);
+      // Note: using eval() to load the plaintext function is dangerous! TODO: better approach for loading in plain text functions
+      // ref: https://developer.mozilla.org/en-US/docs/web/javascript/reference/global_objects/eval#eval_as_a_string_defining_function_requires_and_as_prefix_and_suffix
+      const plainTextJS = jsCodeResource.object.value;
+      jsFunction = eval(`(${plainTextJS})`);
+    }
+    catch (error) {
+      console.warn('Error while parsing JS Implementation: ' + error)
+    }
+    return jsFunction
+  }
+
+
+  createImplementationCallable(imp: Implementation): CallableFunction|null {
+    if (imp instanceof RuntimeProcess)
+      return (args?) => imp.execute(args)
+    if(imp instanceof JavaScriptFunction)
+      throw Error('Not Yet Implemented')
+    return null;
+  }
+
+  /**
+   * Parses implementation description into a RuntimeProcess
+   * @param s: implementation resource
+   * @param gh: GraphHandler
+   */
+  parseRuntimeProcessImplementation(s: any, gh: GraphHandler): RuntimeProcess {
+    const [mapping,] = gh.match(null,$rdf.sym(`${prefixes.fno}implementation`),s);
+    const parameterMappings = gh.filter.sp(mapping.subject, $rdf.sym(`${prefixes.fno}parameterMapping`)).map(st=>st.object)
+    const returnMappings = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}returnMapping`),null).map(st=>st.object)
+    const [baseCommand, ] = gh.match(s,$rdf.sym(`${prefixes.fnoi}baseCommand`),null).map(st => st.object)
+
+    // Position Parameter Mappings
+    const positionParameterMappings = parameterMappings.filter(pm =>
+        gh.match(pm,$rdf.sym(`${prefixes.rdf}type`),$rdf.sym(`${prefixes.fnom}PositionParameterMapping`))
+            .length > 0
+    )
+
+    const positionParameters: PositionParameter[] = positionParameterMappings.map(ppm => {
+      const [position] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}implementationParameterPosition`),null).map(st=>st.object).map(o=>o.value);
+      const [functionParameter] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}functionParameter`),null).map(st=>st.object).map(o=>o.value);
+
+      return {
+        iri: functionParameter,
+        position,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // Property Parameter Mappings
+    const propertyParameterMappings = gh.filter.po(
+        $rdf.sym(`${prefixes.rdf}type`),
+        $rdf.sym(`${prefixes.fnom}PropertyParameterMapping`)
+    )
+
+    // Property Parameters
+    const propertyParameters: PropertyParameter[] = propertyParameterMappings.map(ppm => {
+      const [property] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}implementationProperty`)).map(st => st.object).map(o => o.value)
+      const [functionParameter] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}functionParameter`)).map(st => st.object).map(o => o.value)
+      // TODO: add fno:type
+      return {
+        iri: functionParameter,
+        property,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // Outputs
+    const outputs: Output[] = returnMappings.map(rm => {
+      const [functionOutput] = gh.match(rm,$rdf.sym(`${prefixes.fnom}functionOutput`),null).map(st=>st.object).map(o=>o.value);
+      // TODO: add fno:type
+      return {
+        iri: functionOutput,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // Create (executable) RTP instance
+    const rtpInstance = new RuntimeProcess(s.value,
+        positionParameters,
+        propertyParameters,
+        outputs,
+        [baseCommand]
+        )
+    return rtpInstance
+  }
+
+  dynamicallyLoadImplementations() {
+
+    // "Factory", containing a parser and handler class for each FnO Implementation subclass
+    const implementationFactory = {
+      JavaScriptFunction: {
+        parser: this.parseJavaScriptFunctionImplementation,
+        handlerClass: JavaScriptHandler
+      },
+      RuntimeProcess: {
+        parser: (s: any, gh: GraphHandler) => this.createImplementationCallable(this.parseRuntimeProcessImplementation(s, gh)),
+        handlerClass: RuntimeProcessHandler
+      }
+    }
+    /**
+     * Filters function graph for given Implementation class
+     * @param ic: Implementation classname (e.g. JavaScriptFunction, RuntimeProcess, etc.)
+     */
+    const filterImplementationResources = (ic: string) =>
+        this.graphHandler.match(null,$rdf.sym(`${prefixes.rdf}type`),$rdf.sym(`${prefixes.fnoi}${ic}`));
+
+    /**
+     * Extract subject property from given statement
+     * @param s
+     */
+    const extractSubjectFromStatement = (s: Statement) => s.subject;
+
+    // Load implementations into the implementation handler.
+    Object.keys(implementationFactory)
+        // For each implementation class (e.g. JavaScriptFunction, RuntimeProcess, etc.)
+      .forEach((ic)=>{
+        // Get the resource parser and handler for the current implementation class
+        const  {parser, handlerClass} = implementationFactory[ic];
+        // Filter the implementation resources for the current implementation class
+        filterImplementationResources(ic)
+            // Extract the subject term
+            .map(extractSubjectFromStatement)
+            .forEach(ir => {
+              // Parse the implementation
+              const irCallable = parser(ir,this.graphHandler);
+              // Initialize the handler that will execute the parsed implementation
+              const handler = new handlerClass();
+              if(irCallable) {
+                // If the implementation is successfully parsed, load it into the implementation handler
+                this.implementationHandler.loadImplementation(
+                    ir.value,
+                    handler,
+                    {fn: irCallable}
+                )
+              }
+            });
+      })
+  }
+
   async executeFunction(fn: Function, args: ArgumentMap) {
-    let handler = this.getImplementationViaMappings(fn);
+    let handler: Composition | null = this.getImplementationViaMappings(fn);
     if (handler) {
       return this.implementationHandler.executeImplementation(handler.id, args);
     }
@@ -149,6 +323,8 @@ export class FunctionHandler {
   private getArgsFromMapping(mapping: Mapping): ArgumentMap {
     const parameterMappings = this.getObjects(mapping.term, $rdf.sym(`${prefixes.fno}parameterMapping`));
     const positionArgs = {};
+    const propertyArgs = {};
+
     parameterMappings.forEach((pMapping) => {
       let parameter = this.getObjects(pMapping, $rdf.sym(`${prefixes.fnom}functionParameter`));
       if (parameter.length === 0) {
@@ -156,7 +332,7 @@ export class FunctionHandler {
         return;
       }
       if (parameter.length > 1) {
-        console.warn(`More parameters for ${pMapping.value} than expected (1). Picking one at random.`);
+        throw Error(`An FnO ParameterMapping can be linked to only 1 parameter (${pMapping.value} has ${parameter.length})!`)
       }
       parameter = parameter[0];
       let type = this.getObjects(parameter, $rdf.sym(`${prefixes.fno}type`));
@@ -168,18 +344,32 @@ export class FunctionHandler {
         console.warn(`More types for ${parameter.value} than expected (1). Picking one at random.`);
       }
       type = type[0] || null;
+
+      // Process Property Parameters
+      if (this.graphHandler.isA(pMapping, namespaces.fnom('PropertyParameterMapping'))){
+        const properties = this.graphHandler.filter.sp(pMapping, namespaces.fnom('implementationProperty'))
+            .map((st: Statement) => st.object)
+            .map((o) => o.value);
+        properties.forEach((property)=>{
+          addToResult(propertyArgs, property, predicate.value, type);
+        })
+
+        // throw new Error('Unsupported if not positionparametermapping');
+
+      }
+
+      // Process Position Parameters
       if (this.graphHandler.match(pMapping, $rdf.sym(`${prefixes.rdf}type`), $rdf.sym(`${prefixes.fnom}PositionParameterMapping`)).length > 0) {
         const positions = this.getObjects(pMapping, $rdf.sym(`${prefixes.fnom}implementationParameterPosition`)).map(o => o.value);
         positions.forEach((position) => {
           addToResult(positionArgs, position, predicate.value, type);
         });
-      } else {
-        throw new Error('Unsupported if not positionparametermapping');
       }
     });
 
     return {
       positionArgs,
+      propertyArgs
     };
 
     function addToResult(result, key, value, type) {

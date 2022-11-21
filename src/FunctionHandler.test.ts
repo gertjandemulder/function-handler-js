@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { FunctionHandler } from './FunctionHandler';
 import { } from 'mocha';
 import { JavaScriptHandler } from './handlers/JavaScriptHandler';
-import prefixes from './prefixes';
+import {prefixes} from './prefixes';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -98,6 +98,32 @@ describe('FunctionHandler tests', () => { // the tests container
       [`${prefixes.fns}c`]: 3,
     });
     expect(result[`${prefixes.fns}out`]).to.equal(6);
+    return;
+  });
+
+  it('can load a local file, dynamically load a function and its implementation, and execute', async () => {
+    const handler = new FunctionHandler();
+    await handler.addFunctionResource(`${prefixes.fns}sum`, {
+      type: 'string',
+      contents: fnTtl,
+      contentType: 'text/turtle',
+    });
+    const fn = await handler.getFunction(`${prefixes.fns}sum`);
+
+    expect(fn).to.be.not.null;
+
+    expect(fn.id).to.equal(`${prefixes.fns}sum`);
+
+    // TODO: folllowing two lines should dynamic!
+    // const jsHandler = new JavaScriptHandler();
+    // handler.implementationHandler.loadImplementation(`${prefixes.fns}sumImplementation`, jsHandler, { fn: (a, b) => a + b });
+
+    const result = await handler.executeFunction(fn, {
+      [`${prefixes.fns}a`]: 1,
+      [`${prefixes.fns}b`]: 2,
+    });
+
+    expect(result[`${prefixes.fns}out`]).to.equal(3);
     return;
   });
 });

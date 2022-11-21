@@ -1,0 +1,94 @@
+# FnO description of the linux 'ls' command.
+
+# FnO
+@prefix fno:                  <https://w3id.org/function/ontology#> .
+@prefix fnoc:                 <https://w3id.org/function/vocabulary/composition#> .
+@prefix fnom: <https://w3id.org/function/vocabulary/mapping#> .
+@prefix fnoi: <https://w3id.org/function/vocabulary/implementation#> .
+@prefix fns: <http://example.com/functions#> .
+
+# Other
+@prefix rdf:                  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:                 <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:                  <http://www.w3.org/2001/XMLSchema#> .
+
+# Base
+@base <http://gddmulde.be#> .
+
+# Command ns
+@prefix t_ls: <http://gddmulde.be/commands/unix/ls#> .
+
+################################################################################
+# CWL Inputs -> FnO Parameters
+
+# ls input
+t_ls:pathParameter
+  a   fno:Parameter ;
+  fno:type   xsd:string;
+  fno:predicate t_ls:path;
+.
+
+################################################################################
+# Command Outputs -> FnO Outputs
+
+# ls output
+t_ls:returnOutput
+  a   fno:Output ;
+  fno:type   xsd:string;
+  fno:predicate t_ls:out;
+.
+
+################################################################################
+# Runtime Processes
+
+# process: t_ls
+t_ls:Function
+  a fno:Function;
+  fno:expects ( t_ls:pathParameter );
+  fno:returns ( t_ls:returnOutput );
+.
+
+################################################################################
+# FnO Implementations
+
+<#dev-platform>
+  a fnoi:Platform ;
+  fnoi:architecture "arm64" ; # uname -m
+  fnoi:operatingSystem "Darwin" ; # uname -s
+.
+
+t_ls:Implementation
+  a fno:Implementation, fnoi:RuntimeProcess ;
+  fnoi:baseCommand "ls" ;
+  fnoi:platform <#dev-platform> ;
+.
+
+
+################################################################################
+# FnO Mappings
+
+## Parameter mappings
+
+t_ls:pathParameterMapping
+  a fno:ParameterMapping, fnom:PositionParameterMapping ;
+  fnom:functionParameter t_ls:pathParameter ;
+  fnom:implementationParameterPosition 0;
+.
+
+## Output mappings
+
+t_ls:returnOutputMapping
+  a fno:ReturnMapping, fnom:DefaultReturnMapping;
+  fnom:functionOutput t_ls:returnOutput ;
+.
+
+# fno:Mapping
+
+t_ls:Mapping
+    a fno:Mapping ;
+    fno:function t_ls:Function ;
+    fno:implementation t_ls:Implementation ;
+    fno:parameterMapping t_ls:pathParameterMapping ;
+    fno:returnMapping t_ls:returnOutputMapping ;
+    # fno:methodMapping <..> ; # TODO: delete?
+.
