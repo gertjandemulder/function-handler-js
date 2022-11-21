@@ -162,6 +162,7 @@ describe('RuntimeProcess', function () {
 
     // Execution
     const argMap = {
+      // TODO: change parameter iri with value for fno:predicate (NOT, the iri of the parameter resource, e.g t_ls:pathParameter)
       [prefix(ns.t_ls, 'pathParameter')]:'./resources/fno-cwl/commands/ls_test_dir'
     }
 
@@ -182,54 +183,31 @@ c.txt
   });
 
 });
-describe('Tests for example01', () => { // the tests container
+describe('fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', () => { // the tests container
 
   const dirContainerResources = path.resolve(dirResources, 'example01');
-  const pathConcreteWorkflow = path.resolve(dirContainerResources, basenameConcreteWorkflowTurtle);
-
-  const jsFunctionImplementations = {
-
-    echo: function(message:string) {
-      console.log(`echo(${message})`)
-      return message;
-    },
-
-    uppercase: function(message:string) {
-      return message.toUpperCase();
-    }
-
-  }
-
-
-  it('Contains FnO document of the concrete workflow',async () => {
-    expect(fs.existsSync(pathConcreteWorkflow));
-  });
-
-  it.skip('Contains FnO document of the abstract workflow',async () => {
-    throw Error('Not Yet Implemented');
-  });
-
+  let handler: FunctionHandler;
+  before(async ()=>{
+    handler = new FunctionHandler();
+    // Load FnO descriptions
+    const iriFunctionGraph = prefix(ns.gdm, 'commandGraph');
+    await handler.addFunctionResource(
+        iriFunctionGraph,
+        {
+          type: 'string',
+          contents: readFile(path.resolve(dirContainerResources, 'cwl2fno-expected-result-concrete-wf.ttl')),
+          contentType: 'text/turtle'
+        },
+        false
+    );
+  })
 
   /**
    * Tests loading of functions within the composition (echo, uppercase)
    * Tests results from executing echo and uppercase
    * Test execution result of the function composition (i.e. the workflow)
    */
-  it.skip('Correctly executes the concrete workflow',async () => {
-    const handler = new FunctionHandler();
-    const rtpHandler = new RuntimeProcessHandler();
-    const jsHandler = new JavaScriptHandler();
-
-    // Load FnO descriptions
-    const iriConcreteWorkflow = prefix(ns.gdm, 'workflowGraph');
-    await handler.addFunctionResource(
-      iriConcreteWorkflow,
-      {
-        type: 'string',
-        contents: readFile(pathConcreteWorkflow),
-        contentType: 'text/turtle'
-      }
-    );
+  it('Correctly parses the concrete workflow',async () => {
 
     // IRIs
     const iriWf = prefix(ns.wf, 'Function');
@@ -250,46 +228,84 @@ describe('Tests for example01', () => { // the tests container
 
     expect(fUppercase).not.to.be.null;
     expect(fUppercase.id).not.be.null;
+  });
 
-    // Instantiate implementation handlers
-    const iriEchoImplementation = prefix(ns.t_echo, 'Implementation');
-    const iriUppercaseImplementation = prefix(ns.t_uc, 'Implementation');
+  it('Correctly executes JavaScriptExpression: uppercase',async () => {
 
-    // Implementation by RuntimeProcessHandler
-    handler.implementationHandler.loadImplementation(
-      iriEchoImplementation,
-      rtpHandler,
-      { baseCommand: ["echo"] }
-    );
-
-    // Implementation by JavascriptHandler
-    handler.implementationHandler.loadImplementation(
-      iriUppercaseImplementation,
-      jsHandler,
-      { fn: jsFunctionImplementations.uppercase }
-    );
-
-    // Test echo output
-    const fnEchoArgMap = {
-      [prefix(ns.t_echo, 'message')]: 'abc'
-    }
-    const fnEchoResult = await handler.executeFunction(fEcho, fnEchoArgMap);
-    expect(fnEchoResult[prefix(ns.t_echo, 'out')]).to.equal('abc\n');
-
-    // Test uppercase output
-    const fnUppercaseArgMap = {
+    // IRIs
+    const iriUppercase = prefix(ns.t_uc, 'Function');
+    handler.dynamicallyLoadImplementations();
+    // FnO Function objects
+    const fUppercase = await handler.getFunction(iriUppercase);
+    // Argument values
+    const argMap = {
       [prefix(ns.t_uc, 'message')]: 'abc'
     }
-    const fnUppercaseResult = await handler.executeFunction(fUppercase, fnUppercaseArgMap)
-    expect(fnUppercaseResult[prefix(ns.t_uc, 'uppercase_message')]).to.equal('ABC');
+    // Execute
+    const fnOutput = await handler.executeFunction(fUppercase, argMap);
+    // Test output
+    expect(fnOutput).not.to.be.null;
+    expect(fnOutput[prefix(ns.t_uc, 'returnOutput')]).not.to.be.null;
+    expect(fnOutput[prefix(ns.t_uc, 'returnOutput')]).to.equal('ABC');
 
-    // Test result of execution the function composition
-    const wfArgMap = {
-      [prefix(ns.wf, 'message')]: 'abc'
-    }
-    const wfResult = await handler.executeFunction(fWf, wfArgMap);
-    expect(wfResult[prefix(ns.wf, 'wf_output')]).to.equal('ABC\n');
+  });
 
+  it.skip('Correctly loads the concrete workflow',async () => {
+
+    // IRIs
+    const iriWf = prefix(ns.wf, 'Function');
+    const iriEcho = prefix(ns.t_echo, 'Function');
+    const iriUppercase = prefix(ns.t_uc, 'Function');
+
+    // FnO Function objects
+    const fWf = await handler.getFunction(iriWf);
+    const fEcho = await handler.getFunction(iriEcho);
+    const fUppercase = await handler.getFunction(iriUppercase);
+
+    handler.dynamicallyLoadImplementations();
+    const loadedImplementations = handler.implementationHandler.getLoadedImplementations();
+    const stophere=0;
+  });
+
+  it.skip('Correclty executes the concrete workflow', async ()=>{
+    // // Instantiate implementation handlers
+    // const iriEchoImplementation = prefix(ns.t_echo, 'Implementation');
+    // const iriUppercaseImplementation = prefix(ns.t_uc, 'Implementation');
+    //
+    // // Implementation by RuntimeProcessHandler
+    // handler.implementationHandler.loadImplementation(
+    //     iriEchoImplementation,
+    //     rtpHandler,
+    //     { baseCommand: ["echo"] }
+    // );
+    //
+    // // Implementation by JavascriptHandler
+    // handler.implementationHandler.loadImplementation(
+    //     iriUppercaseImplementation,
+    //     jsHandler,
+    //     { fn: jsFunctionImplementations.uppercase }
+    // );
+    //
+    // // Test echo output
+    // const fnEchoArgMap = {
+    //   [prefix(ns.t_echo, 'message')]: 'abc'
+    // }
+    // const fnEchoResult = await handler.executeFunction(fEcho, fnEchoArgMap);
+    // expect(fnEchoResult[prefix(ns.t_echo, 'out')]).to.equal('abc\n');
+    //
+    // // Test uppercase output
+    // const fnUppercaseArgMap = {
+    //   [prefix(ns.t_uc, 'message')]: 'abc'
+    // }
+    // const fnUppercaseResult = await handler.executeFunction(fUppercase, fnUppercaseArgMap)
+    // expect(fnUppercaseResult[prefix(ns.t_uc, 'uppercase_message')]).to.equal('ABC');
+    //
+    // // Test result of execution the function composition
+    // const wfArgMap = {
+    //   [prefix(ns.wf, 'message')]: 'abc'
+    // }
+    // const wfResult = await handler.executeFunction(fWf, wfArgMap);
+    // expect(wfResult[prefix(ns.wf, 'wf_output')]).to.equal('ABC\n');
   });
 
 
