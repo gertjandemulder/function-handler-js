@@ -69,14 +69,14 @@ describe('RuntimeProcess: lsl.fno.ttl', function () {
 
     // Expected: t_ls:pathParameter - position: 0
     const expectedPathParameter: PositionParameter = {
-      iri: `${ns.t_ls}pathParameter`,
+      iri: `${ns.t_ls}path`,
       position: 0,
       _type: "TODO" // TODO!
     }
 
     // Expected: t_ls:sizeOptionParameter - property: -s
     const expectedSizeOptionParameter : PropertyParameter = {
-      iri: `${ns.t_ls}sizeOptionParameter`,
+      iri: `${ns.t_ls}sizeOption`,
       property: "-s",
       _type: "TODO" // TODO: fns:option
     }
@@ -97,14 +97,14 @@ describe('RuntimeProcess: lsl.fno.ttl', function () {
 
     // Expected: t_ls:pathParameter - position: 0
     const expectedPathParameter: PositionParameter = {
-      iri: `${ns.t_ls}pathParameter`,
+      iri: `${ns.t_ls}path`,
       position: 0,
       _type: "TODO" // TODO!
     }
 
     // Expected: t_ls:sizeOptionParameter - property: -s
     const expectedSizeOptionParameter : PropertyParameter = {
-      iri: `${ns.t_ls}sizeOptionParameter`,
+      iri: `${ns.t_ls}sizeOption`,
       property: "-s",
       _type: "TODO" // TODO: fns:option
     }
@@ -122,16 +122,16 @@ describe('RuntimeProcess: lsl.fno.ttl', function () {
 
     // Execution
     const argMap = {
-      [prefix(ns.t_ls, 'pathParameter')]:'./resources/fno-cwl/commands/ls_test_dir',
-      [prefix(ns.t_ls, 'sizeOptionParameter')]: '',
+      [prefix(ns.t_ls, 'path')]:'./resources/fno-cwl/commands/ls_test_dir',
+      [prefix(ns.t_ls, 'sizeOption')]: '',
     }
 
     //
     const functionOutput = await handler.executeFunction(f, argMap);
     expect(functionOutput).not.to.be.null;
-    expect(functionOutput[prefix(ns.t_ls, 'returnOutput')]).not.to.be.null;
+    expect(functionOutput[prefix(ns.t_ls, 'out')]).not.to.be.null;
 
-    expect(functionOutput[prefix(ns.t_ls, 'returnOutput')]).to.be.equal(
+    expect(functionOutput[prefix(ns.t_ls, 'out')]).to.be.equal(
 `total 24
 8 a.txt
 8 b.txt
@@ -165,18 +165,14 @@ describe('RuntimeProcess', function () {
     // Execution
     const argMap = {
       // TODO: change parameter iri with value for fno:predicate (NOT, the iri of the parameter resource, e.g t_ls:pathParameter)
-      [prefix(ns.t_ls, 'pathParameter')]:'./resources/fno-cwl/commands/ls_test_dir'
+      [prefix(ns.t_ls, 'path')]:'./resources/fno-cwl/commands/ls_test_dir'
     }
 
-    // TODO: dynamically load implementation (this should include loading the basecommand)
-
-    //
+    // Test output
     const functionOutput = await handler.executeFunction(f, argMap);
     expect(functionOutput).not.to.be.null;
-    expect(functionOutput[prefix(ns.t_ls, 'returnOutput')]).not.to.be.null;
-
-
-    expect(functionOutput[prefix(ns.t_ls, 'returnOutput')]).to.be.equal(
+    expect(functionOutput[prefix(ns.t_ls, 'out')]).not.to.be.null;
+    expect(functionOutput[prefix(ns.t_ls, 'out')]).to.be.equal(
         `a.txt
 b.txt
 c.txt
@@ -184,6 +180,8 @@ c.txt
     )
   });
 });
+
+
 
 describe('JavaScriptExpression', () => {
   const dirContainerResources = path.resolve(dirResources, 'example01');
@@ -218,13 +216,85 @@ describe('JavaScriptExpression', () => {
     const fnOutput = await handler.executeFunction(fUppercase, argMap);
     // Test output
     expect(fnOutput).not.to.be.null;
-    expect(fnOutput[prefix(ns.t_uc, 'returnOutput')]).not.to.be.null;
-    expect(fnOutput[prefix(ns.t_uc, 'returnOutput')]).to.equal('ABC');
+    expect(fnOutput[prefix(ns.t_uc, 'uppercase_message')]).not.to.be.null;
+    expect(fnOutput[prefix(ns.t_uc, 'uppercase_message')]).to.equal('ABC');
 
   });
 });
+describe('RuntimeProcess test (echo): fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', function () {
+  let handler;
+  before(async ()=>{
+    handler = new FunctionHandler();
+    // Load FnO descriptions
+    const iriFunctionGraph = prefix(ns.gdm, 'commandGraph');
+    await handler.addFunctionResource(
+        iriFunctionGraph,
+        {
+          type: 'string',
+          contents: readFile(path.resolve(dirResources,'example01', 'cwl2fno-expected-result-concrete-wf.ttl')),
+          contentType: 'text/turtle'
+        },
+        false
+    );
+  })
+  it('Correctly parses a RuntimeProcess',async ()=>{
 
-describe('fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', () => {
+    const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_echo}Implementation`))
+    expect(imp).not.to.be.null;
+    expect(imp.subject).not.to.be.null;
+    // Parse implementation into a RuntimeProcess
+    const rtp: RuntimeProcess = handler.parseRuntimeProcessImplementation(imp.subject, handler.graphHandler);
+
+    // Expected: t_echo:message - position: 0
+    const expectedMessageParameter: PositionParameter = {
+      iri: `${ns.t_echo}message`,
+      position: 0,
+      _type: "TODO" // TODO!
+    }
+
+    // Tests
+    expect(rtp.positionParameters).to.have.length(1);
+    expect(rtp.propertyParameters).to.have.length(0);
+    testPositionParameter(rtp.positionParameters, expectedMessageParameter);
+  });
+
+  it('Correctly executes RuntimeProcess',async ()=>{
+    handler.dynamicallyLoadImplementations();
+    const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_echo}Implementation`))
+    expect(imp).not.to.be.null;
+    expect(imp.subject).not.to.be.null;
+    // Parse implementation into a RuntimeProcess
+    const rtp: RuntimeProcess = handler.parseRuntimeProcessImplementation(imp.subject, handler.graphHandler);
+
+    // Expected: t_echo:message - position: 0
+    const expectedMessageParameter: PositionParameter = {
+      iri: `${ns.t_echo}message`,
+      position: 0,
+      _type: "TODO" // TODO!
+    }
+
+    // Tests
+    expect(rtp.positionParameters).to.have.length(1);
+    expect(rtp.propertyParameters).to.have.length(0);
+    testPositionParameter(rtp.positionParameters, expectedMessageParameter);
+
+    // Function resource
+    const f = await handler.getFunction(prefix(ns.t_echo, 'Function'));
+
+    // Execution
+    const argMap = {
+      [prefix(ns.t_echo, 'message')]:'abc',
+    }
+
+    //
+    const functionOutput = await handler.executeFunction(f, argMap);
+    expect(functionOutput).not.to.be.null;
+    expect(functionOutput[prefix(ns.t_echo, 'out')]).not.to.be.null;
+    expect(functionOutput[prefix(ns.t_echo, 'out')]).to.be.equal('abc\n')
+  });
+})
+
+describe('Workflow test: fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', () => {
 
   const dirContainerResources = path.resolve(dirResources, 'example01');
   let handler: FunctionHandler;
@@ -289,7 +359,34 @@ describe('fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', () => {
         .to.contain('RuntimeProcessHandler')
   });
 
-  it.skip('Correclty executes the concrete workflow', async ()=>{
+  it('Correctly executes the echo function', async ()=>{
+    handler.dynamicallyLoadImplementations();
+    const fEcho = await handler.getFunction(prefix(ns.t_echo, 'Function'));
+    expect(fEcho).not.to.be.null;
+
+    const argMap = {
+      [prefix(ns.t_echo, 'message')]: 'abc'
+    }
+    const functionOutput = await handler.executeFunction(fEcho, argMap)
+    expect(functionOutput)
+        .not.to.be.undefined
+        .not.to.be.null;
+    expect(functionOutput[prefix(ns.t_echo,'out')]).to.equal('abc\n')
+
+  })
+  it('Correclty executes the concrete workflow', async ()=>{
+
+    handler.dynamicallyLoadImplementations();
+    const fWf = await handler.getFunction(prefix(ns.wf, 'Function'));
+    expect(fWf).not.to.be.null;
+
+    // Test result of execution the function composition
+    const wfArgMap = {
+      [prefix(ns.wf, 'message')]: 'abc'
+    }
+    const wfResult = await handler.executeFunction(fWf, wfArgMap);
+    expect(wfResult[prefix(ns.wf, 'wf_output')]).to.equal('ABC\n');
+
     // // Instantiate implementation handlers
     // const iriEchoImplementation = prefix(ns.t_echo, 'Implementation');
     // const iriUppercaseImplementation = prefix(ns.t_uc, 'Implementation');
