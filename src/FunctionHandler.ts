@@ -166,9 +166,9 @@ export class FunctionHandler {
       const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`))
           .map(st => st.object)
           .map(o => o.value)
-      // TODO: add fno:type
+      
       return {
-        iri: predicate, // TODO [!!!] set iri to value of fno:predciate ; _AND_ CHECK WHETHER THIS IS DONE IN ALL PARSERS
+        iri: predicate,
         property,
         _type: "TODO" // TODO: add fno:type
       }
