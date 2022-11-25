@@ -12,7 +12,7 @@ import {
   JavaScriptExpression,
   JavaScriptFunction,
   Output,
-  PositionParameter,
+  PositionParameter, PositionPropertyParameter,
   PropertyParameter,
   RuntimeProcess
 } from "./models/Implementation";
@@ -41,7 +41,6 @@ type DependencyFunction = {
     [predicate: string]: string[]
   }
 }
-export type ImplementationRecord = Record<string, Implementation>;
 
 export class FunctionHandler {
   graphHandler: GraphHandler;
@@ -64,6 +63,112 @@ export class FunctionHandler {
       throw new Error(`Cannot find function for iri: ${iri}`)
     }
     return new Function(term);
+  }
+
+  /**
+   * Extracts FnO Parameters and Outputs for the given FnO Implementation
+   * @param gh: GraphHandler
+   * @param s: subject of the fno:Implementation resource
+   * @private
+   */
+  private extractParametersAndOutputs(gh: GraphHandler, s: any) {
+    const fno_implementation = $rdf.sym(`${prefixes.fno}implementation`)
+    const fno_parameterMapping = $rdf.sym(`${prefixes.fno}parameterMapping`)
+    const fnom_PositionParameterMapping = $rdf.sym(`${prefixes.fnom}PositionParameterMapping`);
+    const fnom_PropertyParameterMapping = $rdf.sym(`${prefixes.fnom}PropertyParameterMapping`);
+    const rdf_type = $rdf.sym(`${prefixes.rdf}type`);
+
+    const mappings = gh.filter.po(fno_implementation, s)
+    const [m] = mappings;
+    const m_parameterMappings = gh.filter.sp(m.subject, fno_parameterMapping).map(st => st.object)
+    // Filter out PositionPropertyParameterMappings
+    const m_positionPropertyParameterMappings = m_parameterMappings.filter(x => {
+      const A = gh.filter.spo(x, rdf_type, fnom_PositionParameterMapping);
+      const B = gh.filter.spo(x, rdf_type, fnom_PropertyParameterMapping);
+      return (A.length === 1) && (B.length === 1)
+    })
+    // Filter out PositionParameterMappings
+    const m_positionParameterMappings = m_parameterMappings
+        .filter((mpm) => !m_positionPropertyParameterMappings.includes(mpm)) // exclude PositionPropertyParameterMappings
+        .filter((mpm) =>
+            gh.filter.spo(
+                mpm,
+                rdf_type,
+                fnom_PositionParameterMapping).length === 1
+        )
+    // Filter out PropertyParameterMappings
+    const m_propertyParameterMappings = m_parameterMappings
+        .filter((mpm) => !m_positionPropertyParameterMappings.includes(mpm)) // exclude PositionPropertyParameterMappings
+        .filter((mpm) =>
+            gh.filter.spo(
+                mpm,
+                rdf_type,
+                fnom_PropertyParameterMapping).length === 1
+        )
+
+    if ((m_positionParameterMappings.length
+        + m_propertyParameterMappings.length
+        + m_positionPropertyParameterMappings.length) !== m_parameterMappings.length)
+      throw Error('ParameterMappings are not correctly processed')
+
+    const returnMappings = gh.match(m.subject, $rdf.sym(`${prefixes.fno}returnMapping`), null).map(st => st.object)
+
+    // Position Parameter Mappings
+    const positionParameters: PositionParameter[] = m_positionParameterMappings.map(ppm => {
+      const [position] = gh.match(ppm, $rdf.sym(`${prefixes.fnom}implementationParameterPosition`), null).map(st => st.object).map(o => o.value);
+      const [functionParameter] = gh.match(ppm, $rdf.sym(`${prefixes.fnom}functionParameter`), null).map(st => st.object).map(o => o.value);
+      const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o => o.value);
+      return {
+        iri: predicate,
+        position,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // Property Parameters
+    const propertyParameters: PropertyParameter[] = m_propertyParameterMappings.map(ppm => {
+      const [property] = gh.filter.sp(ppm, $rdf.sym(`${prefixes.fnom}implementationProperty`)).map(st => st.object).map(o => o.value)
+
+      const [functionParameter] = gh.filter.sp(ppm, $rdf.sym(`${prefixes.fnom}functionParameter`)).map(st => st.object).map(o => o.value)
+      const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o => o.value);
+
+      // TODO: add fno:type
+      return {
+        iri: predicate,
+        property,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // PositionProperty Parameters
+    const positionPropertyParameters: PositionPropertyParameter[] = m_positionPropertyParameterMappings.map(ppm => {
+      const [property] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}implementationProperty`)).map(st => st.object).map(o => o.value)
+      const [position] = gh.match(ppm, $rdf.sym(`${prefixes.fnom}implementationParameterPosition`), null).map(st => st.object).map(o => o.value);
+
+      const [functionParameter] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}functionParameter`)).map(st => st.object).map(o => o.value)
+      const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o => o.value);
+
+      // TODO: add fno:type
+      return {
+        iri: predicate,
+        position,
+        property,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // Outputs
+    const outputs: Output[] = returnMappings.map(rm => {
+      const [functionOutput] = gh.match(rm, $rdf.sym(`${prefixes.fnom}functionOutput`), null).map(st => st.object).map(o => o.value);
+      const [predicate] = gh.filter.sp($rdf.sym(functionOutput), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o => o.value);
+
+      // TODO: add fno:type
+      return {
+        iri: predicate,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+    return {positionParameters, propertyParameters, positionPropertyParameters, outputs};
   }
 
   /** Example
@@ -96,38 +201,14 @@ export class FunctionHandler {
     return jsFunction
   }
 
-  parseJavaScriptExpressionImplementationv1(s: any, gh: GraphHandler): CallableFunction|null {
-    let jsFunction: CallableFunction | null = null
-    try {
-      const [implementationReleaseFileResource,] = gh.match(s,$rdf.sym(`${prefixes.doap}release`),null)
-      if(!implementationReleaseFileResource)
-          // No implementation present in the functiongraph
-        return null;
-
-      const { doap, ex } = namespaces;
-      const [dfr,] = gh.filter.sp(implementationReleaseFileResource.object, doap('file-release'))
-      const [expressionResource,] = gh.filter.sp(dfr.object, ex('value'))
-      const expressionValue = expressionResource.object.value
-      // Note: using eval() to load the plaintext function is dangerous! TODO: better approach for loading in plain text functions
-      // ref: https://developer.mozilla.org/en-US/docs/web/javascript/reference/global_objects/eval#eval_as_a_string_defining_function_requires_and_as_prefix_and_suffix
-      jsFunction = eval(`(${expressionValue})`);
-    }
-    catch (error) {
-      console.warn('Error while parsing JS Implementation: ' + error)
-    }
-    return jsFunction
-  }
-
   /**
    * Parses implementation description into a JavaScriptExpression
    * @param s: implementation resource
    * @param gh: GraphHandler
    */
   parseJavaScriptExpressionImplementation(s: any, gh: GraphHandler): JavaScriptExpression {
-    const [mapping,] = gh.match(null,$rdf.sym(`${prefixes.fno}implementation`),s);
-    const parameterMappings = gh.filter.sp(mapping.subject, $rdf.sym(`${prefixes.fno}parameterMapping`)).map(st=>st.object)
-    const returnMappings = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}returnMapping`),null).map(st=>st.object)
-
+    // TODO: refactor.....
+    const {positionParameters, propertyParameters, positionPropertyParameters, outputs} = this.extractParametersAndOutputs(gh, s);
     // JSExpression specific
     const [implementationReleaseFileResource,] = gh.match(s,$rdf.sym(`${prefixes.doap}release`),null)
     const { doap, ex } = namespaces;
@@ -135,67 +216,41 @@ export class FunctionHandler {
     const [expressionResource,] = gh.filter.sp(dfr.object, ex('value'))
     const expression = expressionResource.object.value
 
-    // Position Parameter Mappings
-    const positionParameterMappings = parameterMappings.filter(pm =>
-        gh.match(pm,$rdf.sym(`${prefixes.rdf}type`),$rdf.sym(`${prefixes.fnom}PositionParameterMapping`))
-            .length > 0
-    )
-
-    const positionParameters: PositionParameter[] = positionParameterMappings.map(ppm => {
-      const [position] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}implementationParameterPosition`),null).map(st=>st.object).map(o=>o.value);
-      const [functionParameter] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}functionParameter`),null).map(st=>st.object).map(o=>o.value);
-
-      return {
-        iri: functionParameter,
-        position,
-        _type: "TODO" // TODO: add fno:type
-      }
-    })
-
-    // Property Parameter Mappings
-    const propertyParameterMappings = gh.filter.po(
-        $rdf.sym(`${prefixes.rdf}type`),
-        $rdf.sym(`${prefixes.fnom}PropertyParameterMapping`)
-    )
-
-    // Property Parameters
-    const propertyParameters: PropertyParameter[] = propertyParameterMappings.map(ppm => {
-      const [property] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}implementationProperty`)).map(st => st.object).map(o => o.value)
-      const [functionParameter] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}functionParameter`))
-          .map(st => st.object).map(o => o.value)
-      const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`))
-          .map(st => st.object)
-          .map(o => o.value)
-      
-      return {
-        iri: predicate,
-        property,
-        _type: "TODO" // TODO: add fno:type
-      }
-    })
-
-    // Outputs
-    const outputs: Output[] = returnMappings.map(rm => {
-      const [functionOutput] = gh.match(rm,$rdf.sym(`${prefixes.fnom}functionOutput`),null).map(st=>st.object).map(o=>o.value);
-      const [predicate] = gh.filter.sp($rdf.sym(functionOutput), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o=>o.value);
-
-      // TODO: add fno:type
-      return {
-        iri: predicate,
-        _type: "TODO" // TODO: add fno:type
-      }
-    })
 
     // Create (executable) JSExpression instance
-    const jsExpressionInstance = new JavaScriptExpression(s.value,
+    const jsExpressionInstance = new JavaScriptExpression(
+        s.value,
         positionParameters,
         propertyParameters,
         outputs,
+        positionPropertyParameters,
         expression
     )
     return jsExpressionInstance
   }
 
+  /**
+   * Parses implementation description into a RuntimeProcess
+   * @param s: implementation resource
+   * @param gh: GraphHandler
+   */
+  parseRuntimeProcessImplementation(s: any, gh: GraphHandler): RuntimeProcess {
+
+    const {positionParameters, propertyParameters, positionPropertyParameters, outputs} = this.extractParametersAndOutputs(gh, s);
+    const [baseCommand, ] = gh.match(s,$rdf.sym(`${prefixes.fnoi}baseCommand`),null).map(st => st.object.value)
+    const [shell, ] = gh.match(s,$rdf.sym(`${prefixes.fnoi}shell`),null).map(st => st.object.value)
+
+    // Create (executable) RTP instance
+    const rtpInstance = new RuntimeProcess(s.value,
+        positionParameters,
+        propertyParameters,
+        outputs,
+        positionPropertyParameters,
+        [baseCommand],
+        shell
+        )
+    return rtpInstance
+  }
 
   createImplementationCallable(imp: Implementation): CallableFunction|null {
     if (
@@ -207,89 +262,6 @@ export class FunctionHandler {
       throw Error('Not Yet Implemented')
 
     return null;
-  }
-
-  /**
-   * Parses implementation description into a RuntimeProcess
-   * @param s: implementation resource
-   * @param gh: GraphHandler
-   */
-  parseRuntimeProcessImplementation(s: any, gh: GraphHandler): RuntimeProcess {
-
-    const fno_implementation = $rdf.sym(`${prefixes.fno}implementation`)
-    const fno_parameterMapping = $rdf.sym(`${prefixes.fno}parameterMapping`)
-    const fnom_PositionParameterMapping = $rdf.sym(`${prefixes.fnom}PositionParameterMapping`);
-    const fnom_PropertyParameterMapping = $rdf.sym(`${prefixes.fnom}PropertyParameterMapping`);
-    const rdf_type = $rdf.sym(`${prefixes.rdf}type`);
-
-
-    const mappings = gh.filter.po(fno_implementation, s)
-    const [m] = mappings;
-    const m_parameterMappings = gh.filter.sp(m.subject, fno_parameterMapping).map(st=>st.object)
-    const m_positionParameterMappings = m_parameterMappings.filter((mpm)=>
-        gh.filter.spo(
-            mpm,
-            rdf_type,
-            fnom_PositionParameterMapping).length === 1
-    )
-    const m_propertyParameterMappings = m_parameterMappings.filter((mpm)=>
-        gh.filter.spo(
-            mpm,
-            rdf_type,
-            fnom_PropertyParameterMapping).length === 1
-    )
-
-    const [mapping,] = gh.match(null,$rdf.sym(`${prefixes.fno}implementation`),s);
-    const returnMappings = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}returnMapping`),null).map(st=>st.object)
-    const [baseCommand, ] = gh.match(s,$rdf.sym(`${prefixes.fnoi}baseCommand`),null).map(st => st.object)
-
-    // Position Parameter Mappings
-    const positionParameters: PositionParameter[] = m_positionParameterMappings.map(ppm => {
-      const [position] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}implementationParameterPosition`),null).map(st=>st.object).map(o=>o.value);
-      const [functionParameter] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}functionParameter`),null).map(st=>st.object).map(o=>o.value);
-      const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o=>o.value);
-      return {
-        iri: predicate,
-        position,
-        _type: "TODO" // TODO: add fno:type
-      }
-    })
-
-    // Property Parameters
-    const propertyParameters: PropertyParameter[] = m_propertyParameterMappings.map(ppm => {
-      const [property] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}implementationProperty`)).map(st => st.object).map(o => o.value)
-
-      const [functionParameter] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}functionParameter`)).map(st => st.object).map(o => o.value)
-      const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o=>o.value);
-
-      // TODO: add fno:type
-      return {
-        iri: predicate,
-        property,
-        _type: "TODO" // TODO: add fno:type
-      }
-    })
-
-    // Outputs
-    const outputs: Output[] = returnMappings.map(rm => {
-      const [functionOutput] = gh.match(rm,$rdf.sym(`${prefixes.fnom}functionOutput`),null).map(st=>st.object).map(o=>o.value);
-      const [predicate] = gh.filter.sp($rdf.sym(functionOutput), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o=>o.value);
-
-      // TODO: add fno:type
-      return {
-        iri: predicate,
-        _type: "TODO" // TODO: add fno:type
-      }
-    })
-
-    // Create (executable) RTP instance
-    const rtpInstance = new RuntimeProcess(s.value,
-        positionParameters,
-        propertyParameters,
-        outputs,
-        [baseCommand]
-        )
-    return rtpInstance
   }
 
   dynamicallyLoadImplementations() {

@@ -15,10 +15,15 @@ export interface PropertyParameter extends Parameter {
     property: string
 }
 
-export interface Output extends PropertyParameter {}
+export interface PositionPropertyParameter extends PositionParameter, PropertyParameter {
+}
+
+export interface Output extends PropertyParameter {
+}
 
 export class Implementation extends TermClass {
     protected callable: Function;
+    private _positionPropertyParameters: PositionPropertyParameter[];
     private _positionParameters: PositionParameter[];
     private _propertyParameters: PropertyParameter[];
     private _outputs: Output[];
@@ -27,7 +32,7 @@ export class Implementation extends TermClass {
                 positionParameters: PositionParameter[] = [],
                 propertyParameters: PropertyParameter[] = [],
                 outputs: Output[] = []
-    ) {
+        , positionPropertyParameters: PositionPropertyParameter[] = []) {
         super(iri);
         this.callable = () => {
             throw Error('Callable Not Implemented!');
@@ -37,6 +42,7 @@ export class Implementation extends TermClass {
             .sort((a: PositionParameter, b: PositionParameter) => a.position < b.position ? -1 : 1)
         this._propertyParameters = propertyParameters;
         this._outputs = outputs;
+        this._positionPropertyParameters = positionPropertyParameters;
     }
 
 
@@ -46,6 +52,10 @@ export class Implementation extends TermClass {
 
     get propertyParameters(): PropertyParameter[] {
         return this._propertyParameters;
+    }
+
+    get positionPropertyParameters(): PositionPropertyParameter[] {
+        return this._positionPropertyParameters;
     }
 
     get outputs(): Output[] {
@@ -78,8 +88,8 @@ export class JavaScriptFunction extends JavaScriptImplementation {
 export class JavaScriptExpression extends JavaScriptImplementation {
     private readonly _expression: string;
 
-    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[], expression: string) {
-        super(iri, positionParameters, propertyParameters, outputs);
+    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[], positionPropertyParameters: PositionPropertyParameter[], expression: string) {
+        super(iri, positionParameters, propertyParameters, outputs, positionPropertyParameters);
         this._expression = expression;
     }
 
@@ -114,22 +124,54 @@ export class JavaScriptExpression extends JavaScriptImplementation {
 }
 
 export class RuntimeProcess extends Implementation {
-    protected baseCommand: string[];
+    private _baseCommand: string[];
+    private _shell: string;
 
 
-    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[], baseCommand: string[]) {
-        super(iri, positionParameters, propertyParameters, outputs);
-        this.baseCommand = baseCommand;
+    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[],
+                positionPropertyParameters: PositionPropertyParameter[],
+                baseCommand: string[],
+                shell: string
+                ) {
+        super(iri, positionParameters, propertyParameters, outputs, positionPropertyParameters);
+        this._baseCommand = baseCommand;
+        this._shell = shell;
+    }
+
+    private buildCommand(args?: any): string {
+        const positionPropertyParameterValuePairs = this.positionPropertyParameters
+            .filter(p => Object.keys(args).includes(p.iri)) // don't process parameters that are not in execution args
+            .map(p => [
+                p.property, args[p.iri]
+            ].join(' '))
+        const positionParameterValues = this.positionParameters
+            .filter(p => Object.keys(args).includes(p.iri)) // don't process parameters that are not in execution args
+            .map(p => args[p.iri])
+        const propertyParameterValuePairs = this.propertyParameters
+            .filter(p => Object.keys(args).includes(p.iri)) // don't process parameters that are not in execution args
+            .map(p => [
+                p.property, args[p.iri]
+            ].join(' '))
+
+        // Build command
+        // <baseCommand> [positionPropertyParameter, ...] [propertyParameter, ...] [positionParameter, ...]
+        const cmd_suffix =
+            [positionPropertyParameterValuePairs, propertyParameterValuePairs, positionParameterValues]
+                .flat()
+                .map(x => x.trim())
+                .join(' ');
+
+
+        const cmd = `${this.baseCommand} ${cmd_suffix}`
+
+        return cmd;
     }
 
     async execute(args?: any): Promise<any> {
-        const positionParameterValues = this.positionParameters.map(p => args[p.iri])
-        const propertyParameterValuePairs = this.propertyParameters.map(p => [p.property, args[p.iri]].join(' '))
-
-        // <baseCommand> [propertyParameter, ...] [positionParameter, ...]
-        const cmd = `${this.baseCommand} ${propertyParameterValuePairs} ${positionParameterValues.join(' ')}` // TODO: add propertyparameter
+        const cmd = this.buildCommand(args);
+        const options = { shell: this.shell }
         const execPromise = new Promise((resolve, reject) => {
-            exec(cmd, (error, stdout, stderr) => {
+            exec(cmd, options, (error, stdout, stderr) => {
                 if (error) {
                     reject(error)
                     return;
@@ -151,5 +193,14 @@ export class RuntimeProcess extends Implementation {
         }
 
         return result;
+    }
+
+
+    get baseCommand(): string[] {
+        return this._baseCommand;
+    }
+
+    get shell(): string {
+        return this._shell;
     }
 }
