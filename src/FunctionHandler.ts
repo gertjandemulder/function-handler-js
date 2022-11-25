@@ -260,7 +260,8 @@ export class FunctionHandler {
 
     const [mapping,] = gh.match(null,$rdf.sym(`${prefixes.fno}implementation`),s);
     const returnMappings = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}returnMapping`),null).map(st=>st.object)
-    const [baseCommand, ] = gh.match(s,$rdf.sym(`${prefixes.fnoi}baseCommand`),null).map(st => st.object)
+    const [baseCommand, ] = gh.match(s,$rdf.sym(`${prefixes.fnoi}baseCommand`),null).map(st => st.object.value)
+    const [shell, ] = gh.match(s,$rdf.sym(`${prefixes.fnoi}shell`),null).map(st => st.object.value)
 
     // Position Parameter Mappings
     const positionParameters: PositionParameter[] = m_positionParameterMappings.map(ppm => {
@@ -324,7 +325,8 @@ export class FunctionHandler {
         propertyParameters,
         outputs,
         positionPropertyParameters,
-        [baseCommand]
+        [baseCommand],
+        shell
         )
     return rtpInstance
   }

@@ -229,6 +229,7 @@ describe('JavaScriptExpression', () => {
 
   });
 });
+
 describe('RuntimeProcess test (echo): fno-cwl/example01/cwl2fno-expected-result-concrete-wf.ttl', function () {
   let handler;
   before(async ()=>{
@@ -245,7 +246,8 @@ describe('RuntimeProcess test (echo): fno-cwl/example01/cwl2fno-expected-result-
         false
     );
   })
-  it('Correctly parses a RuntimeProcess',async ()=>{
+
+  it('Correctly parses: echo -n',async ()=>{
 
     const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_echo}Implementation`))
     expect(imp).not.to.be.null;
@@ -268,33 +270,31 @@ describe('RuntimeProcess test (echo): fno-cwl/example01/cwl2fno-expected-result-
       _type: "TODO" // TODO!
     }
 
-    // Tests
+    // Test: Parameters
     expect(rtp.positionParameters).to.have.length(1);
     expect(rtp.propertyParameters).to.have.length(0);
     expect(rtp.positionPropertyParameters).to.have.length(1);
     testPositionParameter(rtp.positionParameters, expectedMessageParameter);
     testPositionPropertyParameter(rtp.positionPropertyParameters, expectedNoTrailingNewLineParameter);
+
+    // Test: RuntimeProcess specific members
+    expect(rtp.baseCommand)
+        .to.be.an('array')
+        .to.contain('echo')
+        .to.have.length(1)
+
+    expect(rtp.shell)
+        .to.be.a('string')
+        .to.equal('/bin/bash')
   });
 
-  it('Correctly executes RuntimeProcess',async ()=>{
+  it('Correctly executes echo [message]',async ()=>{
     handler.dynamicallyLoadImplementations();
     const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_echo}Implementation`))
     expect(imp).not.to.be.null;
     expect(imp.subject).not.to.be.null;
     // Parse implementation into a RuntimeProcess
     const rtp: RuntimeProcess = handler.parseRuntimeProcessImplementation(imp.subject, handler.graphHandler);
-
-    // Expected: t_echo:message - position: 0
-    const expectedMessageParameter: PositionParameter = {
-      iri: `${ns.t_echo}message`,
-      position: 0,
-      _type: "TODO" // TODO!
-    }
-
-    // Tests
-    expect(rtp.positionParameters).to.have.length(1);
-    expect(rtp.propertyParameters).to.have.length(0);
-    testPositionParameter(rtp.positionParameters, expectedMessageParameter);
 
     // Function resource
     const f = await handler.getFunction(prefix(ns.t_echo, 'Function'));
@@ -309,6 +309,30 @@ describe('RuntimeProcess test (echo): fno-cwl/example01/cwl2fno-expected-result-
     expect(functionOutput).not.to.be.null;
     expect(functionOutput[prefix(ns.t_echo, 'out')]).not.to.be.null;
     expect(functionOutput[prefix(ns.t_echo, 'out')]).to.be.equal('abc\n')
+  });
+
+  it('Correctly executes RuntimeProcess: echo -n [message]',async ()=>{
+    handler.dynamicallyLoadImplementations();
+    const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_echo}Implementation`))
+    expect(imp).not.to.be.null;
+    expect(imp.subject).not.to.be.null;
+    // Parse implementation into a RuntimeProcess
+    const rtp: RuntimeProcess = handler.parseRuntimeProcessImplementation(imp.subject, handler.graphHandler);
+
+    // Function resource
+    const f = await handler.getFunction(prefix(ns.t_echo, 'Function'));
+
+    // Execution
+    const argMap = {
+      [prefix(ns.t_echo, 'message')]:'abc',
+      [prefix(ns.t_echo, 'noTrailingNewLine')]:'',
+    }
+
+    //
+    const functionOutput = await handler.executeFunction(f, argMap);
+    expect(functionOutput).not.to.be.null;
+    expect(functionOutput[prefix(ns.t_echo, 'out')]).not.to.be.null;
+    expect(functionOutput[prefix(ns.t_echo, 'out')]).to.be.equal('abc')
   });
 })
 

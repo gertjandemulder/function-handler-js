@@ -192,6 +192,7 @@ wf:Composition
 t_echo:Implementation
   a fno:Implementation, fnoi:RuntimeProcess ;
   fnoi:baseCommand "echo" ;
+  fnoi:shell "/bin/bash";
   fnoi:platform <#dev-platform> ;
 .
 
