@@ -52,6 +52,10 @@ export class Implementation extends TermClass {
         return this._propertyParameters;
     }
 
+    get positionPropertyParameters(): PositionPropertyParameter[] {
+        return this._positionPropertyParameters;
+    }
+
     get outputs(): Output[] {
         return this._outputs;
     }
