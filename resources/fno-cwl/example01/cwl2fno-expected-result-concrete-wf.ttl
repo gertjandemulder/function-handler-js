@@ -40,6 +40,13 @@ t_echo:messageParameter
   fno:predicate t_echo:message;
 .
 
+# -n
+t_echo:noTrailingNewLineParameter
+  a   fno:Parameter;
+  fno:type fns:option; # TODO: check with @BDM.
+  fno:predicate t_echo:noTrailingNewLine ;
+.
+
 # uppercase input
 t_uc:messageParameter
   a   fno:Parameter ;
@@ -53,6 +60,13 @@ wf:messageParameter
   fno:type   xsd:string ;
   fno:predicate wf:message ;
 .
+
+wf:noTrailingNewLineParameter
+  a   fno:Parameter;
+  fno:type fns:option; # TODO: check with @BDM.
+  fno:predicate wf:noTrailingNewLine ;
+.
+
 
 ################################################################################
 # CWL Outputs -> FnO Outputs
@@ -84,14 +98,14 @@ wf:returnOutput
 # process: workflow
 wf:Function
   a fno:Function;
-  fno:expects ( wf:messageParameter );
+  fno:expects ( wf:messageParameter wf:noTrailingNewLineParameter );
   fno:returns ( wf:returnOutput );
 .
 
 # process: echo
 t_echo:Function
   a fno:Function;
-  fno:expects ( t_echo:messageParameter );
+  fno:expects ( t_echo:messageParameter t_echo:noTrailingNewLineParameter  );
   fno:returns ( t_echo:returnOutput );
 .
 
@@ -110,7 +124,7 @@ wf:Composition
   a fnoc:Composition ;
 
   fnoc:composedOf [
-    # wf.in -> echo.in
+    # wf.in (message) -> echo.in (message)
       fnoc:mapFrom [
         fnoc:constituentFunction wf:Function ;
         fnoc:functionParameter wf:messageParameter ;
@@ -121,6 +135,19 @@ wf:Composition
         fnoc:constituentFunction t_echo:Function ;
         fnoc:functionParameter t_echo:messageParameter ;
       ];
+    ],
+
+    [
+      # wf.in (noTrailingNewLine) -> echo.in (noTrailingNewLine)
+      fnoc:mapFrom [
+          fnoc:constituentFunction wf:Function ;
+          fnoc:functionParameter wf:noTrailingNewLineParameter  ;
+
+        ];
+        fnoc:mapTo [
+          fnoc:constituentFunction t_echo:Function ;
+          fnoc:functionParameter t_echo:noTrailingNewLineParameter  ;
+        ];
     ],
     # echo.out -> uppercase.in
     [
@@ -166,8 +193,6 @@ t_echo:Implementation
   a fno:Implementation, fnoi:RuntimeProcess ;
   fnoi:baseCommand "echo" ;
   fnoi:platform <#dev-platform> ;
-  # TODO: arguments
-
 .
 
 # Uppercase
@@ -186,10 +211,18 @@ t_uc:JSExpressionImplementation
 
 ## Parameter mappings
 
+t_echo:noTrailingNewLineParameterMapping
+  a fno:ParameterMapping, fnom:PositionParameterMapping, fnom:PropertyParameterMapping ;
+  fnom:functionParameter t_echo:noTrailingNewLineParameter  ;
+  fnom:implementationParameterPosition 0;
+  fnom:implementationProperty "-n";
+.
+
+
 t_echo:messageParameterMapping
   a fno:ParameterMapping, fnom:PositionParameterMapping ;
   fnom:functionParameter t_echo:messageParameter ;
-  fnom:implementationParameterPosition 0;
+  fnom:implementationParameterPosition 1;
 .
 
 t_uc:messageParameterMapping
@@ -217,8 +250,8 @@ t_echo:Mapping
     fno:function t_echo:Function ;
     fno:implementation t_echo:Implementation ; # TODO: introduce a new fnoi:CommandLineTool class?
     fno:parameterMapping t_echo:messageParameterMapping ;
+    fno:parameterMapping t_echo:noTrailingNewLineParameterMapping ;
     fno:returnMapping t_echo:returnOutputputMapping ;
-    # fno:methodMapping <..> ; # TODO: delete?
 .
 
 t_uc:Mapping
@@ -227,5 +260,4 @@ t_uc:Mapping
     fno:implementation t_uc:JSExpressionImplementation ;
     fno:parameterMapping t_uc:messageParameterMapping ;
     fno:returnMapping t_uc:outputMapping ;
-    # fno:methodMapping <..> ; # TODO: delete?
 .
