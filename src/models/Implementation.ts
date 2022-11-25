@@ -15,6 +15,8 @@ export interface PropertyParameter extends Parameter {
     property: string
 }
 
+export interface PositionPropertyParameter extends PositionParameter,PropertyParameter {}
+
 export interface Output extends PropertyParameter {}
 
 export class Implementation extends TermClass {
