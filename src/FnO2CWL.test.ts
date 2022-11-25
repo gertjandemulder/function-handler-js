@@ -8,7 +8,13 @@ import * as path from 'path';
 import { RuntimeProcessHandler } from './handlers/RuntimeProcessHandler';
 import exp from "constants";
 import * as $rdf from 'rdflib';
-import {PositionParameter, PositionPropertyParameter, PropertyParameter, RuntimeProcess} from "./models/Implementation";
+import {
+  JavaScriptExpression,
+  PositionParameter,
+  PositionPropertyParameter,
+  PropertyParameter,
+  RuntimeProcess
+} from "./models/Implementation";
 import {JavaScriptExpressionHandler} from "./handlers/JavaScriptExpressionHandler";
 function readFile(path) {
   return fs.readFileSync(path, { encoding: 'utf-8' });
@@ -191,7 +197,7 @@ c.txt
 
 
 
-describe('JavaScriptExpression', () => {
+describe('JavaScriptExpressions in cwl2fno-expected-result-concrete-wf.ttl', () => {
   const dirContainerResources = path.resolve(dirResources, 'example01');
   let handler: FunctionHandler;
   before(async ()=>{
@@ -209,8 +215,32 @@ describe('JavaScriptExpression', () => {
     );
   })
 
-  it('Correctly executes JavaScriptExpression: uppercase',async () => {
+  it('Correctly parses: uppercase',async () => {
+    const [imp] = handler.graphHandler.filter.s($rdf.sym(`${ns.t_uc}JSExpressionImplementation`))
+    expect(imp).not.to.be.null;
+    expect(imp.subject).not.to.be.null;
 
+    // Parse implementation into a JavaScriptExpression
+    const jse: JavaScriptExpression = handler.parseJavaScriptExpressionImplementation(imp.subject, handler.graphHandler);
+
+    // Test parameters
+    expect(jse.positionParameters).to.be.empty;
+    expect(jse.propertyParameters).to.be.have.length(1)
+    expect(jse.positionPropertyParameters).to.be.empty;
+
+    // Test JSE specific members
+    expect(jse.expression).to.equal('message.toUpperCase()')
+
+    // Expected: t_uc:message - property: message
+    const expectedMessageParameter : PropertyParameter = {
+      iri: `${ns.t_uc}message`,
+      property: "message",
+      _type: "TODO" // TODO: fns:option
+    }
+    testPropertyParameter(jse.propertyParameters, expectedMessageParameter)
+  });
+
+  it('Correctly executes: uppercase',async () => {
     // IRIs
     const iriUppercase = prefix(ns.t_uc, 'Function');
     handler.dynamicallyLoadImplementations();
@@ -226,7 +256,6 @@ describe('JavaScriptExpression', () => {
     expect(fnOutput).not.to.be.null;
     expect(fnOutput[prefix(ns.t_uc, 'uppercase_message')]).not.to.be.null;
     expect(fnOutput[prefix(ns.t_uc, 'uppercase_message')]).to.equal('ABC');
-
   });
 });
 
