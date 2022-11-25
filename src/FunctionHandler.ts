@@ -12,7 +12,7 @@ import {
   JavaScriptExpression,
   JavaScriptFunction,
   Output,
-  PositionParameter,
+  PositionParameter, PositionPropertyParameter,
   PropertyParameter,
   RuntimeProcess
 } from "./models/Implementation";
