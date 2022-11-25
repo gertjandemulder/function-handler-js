@@ -1,0 +1,320 @@
+<svg version="1.1" baseProfile="full" width="2201.0" height="744.0" viewbox="0 0 2201 744" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<desc >#.interface: fill=lightblue
+#.enumeration: fill=lightgreen
+#.type: fill=lightgray
+[CompositionHandler||+executeFunction(): Promise&lt;{ \[key: string\]: any; }&gt;]
+[&lt;type&gt;CompositionHandlerOptions|+compositionFn: string;+composedOfValueMap: any;+dependencyMeta: { \[compositionFn: string\]: { type: string; fn: Function; inputs: { \[predicate: string\]: string\[\]; }; outputs: { \[predicate: string\]: string\[\]; }; }; };+dependencyList: any;+implementationHandler: ImplementationHandler|]
+[Handler]&lt;:-[CompositionHandler]
+[CompositionHandlerOptions]  -  [ImplementationHandler]
+[Handler|+_handlingIri: string|+executeFunction(): Promise&lt;{ \[key: string\]: any; }&gt;]
+[&lt;interface&gt;ArgumentMap|+positionArgs: { \[index: string\]: string\[\]; } \| undefined;+propertyArgs: { \[index: string\]: string\[\]; } \| undefined|]
+[&lt;interface&gt;ReturnMap|+_default: string \| undefined|]
+[ImplementationHandler|-_loadedImplementations: { \[implementationId: string\]: InternalImplementation; };-_compositionHandler: CompositionHandler|+loadImplementation(): void;+loadComposition(): void;+setOptions(): boolean;+linkImplementationToFunction(): boolean;+hasImplementation(): boolean;+getImplementation(): InternalImplementation;+hasImplementationForFunction(): boolean;+getImplementations(): string\[\];+getLoadedImplementations(): { \[implementationId: string\]: InternalImplementation; };+executeImplementation(): Promise&lt;{ \[key: string\]: any; }&gt;]
+[&lt;type&gt;InternalImplementation|+fnId: string \| undefined;+handler: Handler;+options: any|]
+[ImplementationHandler]  -  [CompositionHandler]
+[InternalImplementation]  -  [Handler]
+[JavaScriptExpressionHandler||+executeFunction(): Promise&lt;{ \[key: string\]: any; }&gt;]
+[Handler]&lt;:-[JavaScriptExpressionHandler]
+[JavaScriptHandler||+executeFunction(): Promise&lt;{ \[key: string\]: any; }&gt;]
+[Handler]&lt;:-[JavaScriptHandler]
+[RuntimeProcessHandler||+executeFunction(): Promise&lt;{ \[key: string\]: any; }&gt;]
+[Handler]&lt;:-[RuntimeProcessHandler]</desc>
+<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
+<g transform="translate(0.5, 0.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
+<g stroke="transparent" fill="transparent">
+<rect x="0.0" y="0.0" height="744.0" width="2201.0" stroke="none"></rect>
+</g>
+<g transform="translate(8, 8)" fill="#33322E">
+<g transform="translate(20, 20)" fill="#eee8d5" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+<path d="M1168.0 477.1 L840 583 L529.5 621.2012795275591 L529.5 621.2 " fill="none"></path>
+<path d="M1169.7 482.2 L1168.0 477.1 L1166.4 472.0 L1180.7 473.0 Z"></path>
+<path d="M332.0 235.0 L332 255 L332 275 L332.0 275.0 " fill="none"></path>
+<path d="M332.0 563.0 L332 583 L332 603 L332.0 603.0 " fill="none"></path>
+<path d="M1348.0 167.5 L1348 255 L1348 365 L1348.0 365.0 " fill="none"></path>
+<path d="M1247.5 479.9 L1077.5 583 L1077.5 603 L1077.5 603.0 " fill="none"></path>
+<path d="M1250.3 484.5 L1247.5 479.9 L1244.8 475.4 L1258.9 473.0 Z"></path>
+<path d="M1411.6 482.4 L1512.5 583 L1512.5 603 L1512.5 603.0 " fill="none"></path>
+<path d="M1415.4 478.6 L1411.6 482.4 L1407.8 486.2 L1402.2 473.0 Z"></path>
+<path d="M1558.3 476.5 L1947.5 583 L1947.5 603 L1947.5 603.0 " fill="none"></path>
+<path d="M1559.7 471.4 L1558.3 476.5 L1556.8 481.7 L1545.4 473.0 Z"></path>
+<g data-name="CompositionHandler">
+<g fill="#eee8d5" stroke="#33322E" data-name="CompositionHandler">
+<rect x="135.0" y="603.0" height="85.0" width="395.0" data-name="CompositionHandler"></rect>
+<path d="M135.0 634.0 L530.0 634.0" fill="none" data-name="CompositionHandler"></path>
+<path d="M135.0 642.0 L530.0 642.0" fill="none" data-name="CompositionHandler"></path>
+</g>
+<g transform="translate(135, 603)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="CompositionHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CompositionHandler">
+<a id="../../src/handlers/CompositionHandler.ts.CompositionHandler" xlink:href="../../src/handlers/CompositionHandler.ts"><text x="189.5" y="13.5" stroke="none" text-anchor="middle" data-name="CompositionHandler">CompositionHandler</text></a>
+
+</g>
+</g>
+<g transform="translate(135, 634)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompositionHandler">
+<g transform="translate(8, 8)" fill="#33322E" data-name="CompositionHandler">
+
+</g>
+</g>
+<g transform="translate(135, 642)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompositionHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CompositionHandler">
+<text x="0.0" y="13.5" stroke="none" data-name="CompositionHandler">+executeFunction(): Promise&lt;{ [key: string]: any</text>
+<text x="0.0" y="28.5" stroke="none" data-name="CompositionHandler">}&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="CompositionHandlerOptions">
+<g fill="lightgray" stroke="#33322E" data-name="CompositionHandlerOptions">
+<rect x="96.0" y="0.0" height="235.0" width="472.0" data-name="CompositionHandlerOptions"></rect>
+<path d="M96.0 31.0 L568.0 31.0" fill="none" data-name="CompositionHandlerOptions"></path>
+<path d="M96.0 227.0 L568.0 227.0" fill="none" data-name="CompositionHandlerOptions"></path>
+</g>
+<g transform="translate(96, 0)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompositionHandlerOptions">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CompositionHandlerOptions">
+<a id=".CompositionHandlerOptions" xlink:href=""><text x="228.0" y="13.5" stroke="none" text-anchor="middle" data-name="CompositionHandlerOptions">CompositionHandlerOptions</text></a>
+
+</g>
+</g>
+<g transform="translate(96, 31)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompositionHandlerOptions">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CompositionHandlerOptions">
+<text x="0.0" y="13.5" stroke="none" data-name="CompositionHandlerOptions">+compositionFn: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="CompositionHandlerOptions">+composedOfValueMap: any</text>
+<text x="0.0" y="43.5" stroke="none" data-name="CompositionHandlerOptions">+dependencyMeta: { [compositionFn: string]: { type: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="CompositionHandlerOptions">fn: Function</text>
+<text x="0.0" y="73.5" stroke="none" data-name="CompositionHandlerOptions">inputs: { [predicate: string]: string[]</text>
+<text x="0.0" y="88.5" stroke="none" data-name="CompositionHandlerOptions">}</text>
+<text x="0.0" y="103.5" stroke="none" data-name="CompositionHandlerOptions">outputs: { [predicate: string]: string[]</text>
+<text x="0.0" y="118.5" stroke="none" data-name="CompositionHandlerOptions">}</text>
+<text x="0.0" y="133.5" stroke="none" data-name="CompositionHandlerOptions">}</text>
+<text x="0.0" y="148.5" stroke="none" data-name="CompositionHandlerOptions">}</text>
+<text x="0.0" y="163.5" stroke="none" data-name="CompositionHandlerOptions">+dependencyList: any</text>
+<text x="0.0" y="178.5" stroke="none" data-name="CompositionHandlerOptions">+implementationHandler: ImplementationHandler</text>
+
+</g>
+</g>
+<g transform="translate(96, 227)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompositionHandlerOptions">
+<g transform="translate(8, 8)" fill="#33322E" data-name="CompositionHandlerOptions">
+
+</g>
+</g>
+</g>
+<g data-name="Handler">
+<g fill="#eee8d5" stroke="#33322E" data-name="Handler">
+<rect x="1151.0" y="365.0" height="108.0" width="395.0" data-name="Handler"></rect>
+<path d="M1151.0 396.0 L1546.0 396.0" fill="none" data-name="Handler"></path>
+<path d="M1151.0 427.0 L1546.0 427.0" fill="none" data-name="Handler"></path>
+</g>
+<g transform="translate(1151, 365)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Handler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Handler">
+<a id="../../src/handlers/Handler.ts.Handler" xlink:href="../../src/handlers/Handler.ts"><text x="189.5" y="13.5" stroke="none" text-anchor="middle" data-name="Handler">Handler</text></a>
+
+</g>
+</g>
+<g transform="translate(1151, 396)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Handler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Handler">
+<text x="0.0" y="13.5" stroke="none" data-name="Handler">+_handlingIri: string</text>
+
+</g>
+</g>
+<g transform="translate(1151, 427)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Handler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Handler">
+<text x="0.0" y="13.5" stroke="none" data-name="Handler">+executeFunction(): Promise&lt;{ [key: string]: any</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Handler">}&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="ArgumentMap">
+<g fill="lightblue" stroke="#33322E" data-name="ArgumentMap">
+<rect x="608.0" y="60.0" height="115.0" width="320.0" data-name="ArgumentMap"></rect>
+<path d="M608.0 91.0 L928.0 91.0" fill="none" data-name="ArgumentMap"></path>
+<path d="M608.0 167.0 L928.0 167.0" fill="none" data-name="ArgumentMap"></path>
+</g>
+<g transform="translate(608, 60)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ArgumentMap">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ArgumentMap">
+<a id="../../src/handlers/Handler.ts.ArgumentMap" xlink:href="../../src/handlers/Handler.ts"><text x="152.0" y="13.5" stroke="none" text-anchor="middle" data-name="ArgumentMap">ArgumentMap</text></a>
+
+</g>
+</g>
+<g transform="translate(608, 91)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ArgumentMap">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ArgumentMap">
+<text x="0.0" y="13.5" stroke="none" data-name="ArgumentMap">+positionArgs: { [index: string]: string[]</text>
+<text x="0.0" y="28.5" stroke="none" data-name="ArgumentMap">} | undefined</text>
+<text x="0.0" y="43.5" stroke="none" data-name="ArgumentMap">+propertyArgs: { [index: string]: string[]</text>
+<text x="0.0" y="58.5" stroke="none" data-name="ArgumentMap">} | undefined</text>
+
+</g>
+</g>
+<g transform="translate(608, 167)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ArgumentMap">
+<g transform="translate(8, 8)" fill="#33322E" data-name="ArgumentMap">
+
+</g>
+</g>
+</g>
+<g data-name="ReturnMap">
+<g fill="lightblue" stroke="#33322E" data-name="ReturnMap">
+<rect x="968.0" y="83.0" height="70.0" width="238.0" data-name="ReturnMap"></rect>
+<path d="M968.0 114.0 L1206.0 114.0" fill="none" data-name="ReturnMap"></path>
+<path d="M968.0 145.0 L1206.0 145.0" fill="none" data-name="ReturnMap"></path>
+</g>
+<g transform="translate(968, 83)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ReturnMap">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ReturnMap">
+<a id="../../src/handlers/Handler.ts.ReturnMap" xlink:href="../../src/handlers/Handler.ts"><text x="111.0" y="13.5" stroke="none" text-anchor="middle" data-name="ReturnMap">ReturnMap</text></a>
+
+</g>
+</g>
+<g transform="translate(968, 114)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ReturnMap">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ReturnMap">
+<text x="0.0" y="13.5" stroke="none" data-name="ReturnMap">+_default: string | undefined</text>
+
+</g>
+</g>
+<g transform="translate(968, 145)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ReturnMap">
+<g transform="translate(8, 8)" fill="#33322E" data-name="ReturnMap">
+
+</g>
+</g>
+</g>
+<g data-name="ImplementationHandler">
+<g fill="#eee8d5" stroke="#33322E" data-name="ImplementationHandler">
+<rect x="0.0" y="275.0" height="288.0" width="664.0" data-name="ImplementationHandler"></rect>
+<path d="M0.0 306.0 L664.0 306.0" fill="none" data-name="ImplementationHandler"></path>
+<path d="M0.0 367.0 L664.0 367.0" fill="none" data-name="ImplementationHandler"></path>
+</g>
+<g transform="translate(0, 275)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ImplementationHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ImplementationHandler">
+<a id="../../src/handlers/ImplementationHandler.ts.ImplementationHandler" xlink:href="../../src/handlers/ImplementationHandler.ts"><text x="324.0" y="13.5" stroke="none" text-anchor="middle" data-name="ImplementationHandler">ImplementationHandler</text></a>
+
+</g>
+</g>
+<g transform="translate(0, 306)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ImplementationHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ImplementationHandler">
+<text x="0.0" y="13.5" stroke="none" data-name="ImplementationHandler">-_loadedImplementations: { [implementationId: string]: InternalImplementation</text>
+<text x="0.0" y="28.5" stroke="none" data-name="ImplementationHandler">}</text>
+<text x="0.0" y="43.5" stroke="none" data-name="ImplementationHandler">-_compositionHandler: CompositionHandler</text>
+
+</g>
+</g>
+<g transform="translate(0, 367)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ImplementationHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ImplementationHandler">
+<text x="0.0" y="13.5" stroke="none" data-name="ImplementationHandler">+loadImplementation(): void</text>
+<text x="0.0" y="28.5" stroke="none" data-name="ImplementationHandler">+loadComposition(): void</text>
+<text x="0.0" y="43.5" stroke="none" data-name="ImplementationHandler">+setOptions(): boolean</text>
+<text x="0.0" y="58.5" stroke="none" data-name="ImplementationHandler">+linkImplementationToFunction(): boolean</text>
+<text x="0.0" y="73.5" stroke="none" data-name="ImplementationHandler">+hasImplementation(): boolean</text>
+<text x="0.0" y="88.5" stroke="none" data-name="ImplementationHandler">+getImplementation(): InternalImplementation</text>
+<text x="0.0" y="103.5" stroke="none" data-name="ImplementationHandler">+hasImplementationForFunction(): boolean</text>
+<text x="0.0" y="118.5" stroke="none" data-name="ImplementationHandler">+getImplementations(): string[]</text>
+<text x="0.0" y="133.5" stroke="none" data-name="ImplementationHandler">+getLoadedImplementations(): { [implementationId: string]: InternalImplementation</text>
+<text x="0.0" y="148.5" stroke="none" data-name="ImplementationHandler">}</text>
+<text x="0.0" y="163.5" stroke="none" data-name="ImplementationHandler">+executeImplementation(): Promise&lt;{ [key: string]: any</text>
+<text x="0.0" y="178.5" stroke="none" data-name="ImplementationHandler">}&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="InternalImplementation">
+<g fill="lightgray" stroke="#33322E" data-name="InternalImplementation">
+<rect x="1246.0" y="68.0" height="100.0" width="204.0" data-name="InternalImplementation"></rect>
+<path d="M1246.0 99.0 L1450.0 99.0" fill="none" data-name="InternalImplementation"></path>
+<path d="M1246.0 160.0 L1450.0 160.0" fill="none" data-name="InternalImplementation"></path>
+</g>
+<g transform="translate(1246, 68)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="InternalImplementation">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="InternalImplementation">
+<a id=".InternalImplementation" xlink:href=""><text x="94.0" y="13.5" stroke="none" text-anchor="middle" data-name="InternalImplementation">InternalImplementation</text></a>
+
+</g>
+</g>
+<g transform="translate(1246, 99)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="InternalImplementation">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="InternalImplementation">
+<text x="0.0" y="13.5" stroke="none" data-name="InternalImplementation">+fnId: string | undefined</text>
+<text x="0.0" y="28.5" stroke="none" data-name="InternalImplementation">+handler: Handler</text>
+<text x="0.0" y="43.5" stroke="none" data-name="InternalImplementation">+options: any</text>
+
+</g>
+</g>
+<g transform="translate(1246, 160)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="InternalImplementation">
+<g transform="translate(8, 8)" fill="#33322E" data-name="InternalImplementation">
+
+</g>
+</g>
+</g>
+<g data-name="JavaScriptExpressionHandler">
+<g fill="#eee8d5" stroke="#33322E" data-name="JavaScriptExpressionHandler">
+<rect x="880.0" y="603.0" height="85.0" width="395.0" data-name="JavaScriptExpressionHandler"></rect>
+<path d="M880.0 634.0 L1275.0 634.0" fill="none" data-name="JavaScriptExpressionHandler"></path>
+<path d="M880.0 642.0 L1275.0 642.0" fill="none" data-name="JavaScriptExpressionHandler"></path>
+</g>
+<g transform="translate(880, 603)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="JavaScriptExpressionHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="JavaScriptExpressionHandler">
+<a id="../../src/handlers/JavaScriptExpressionHandler.ts.JavaScriptExpressionHandler" xlink:href="../../src/handlers/JavaScriptExpressionHandler.ts"><text x="189.5" y="13.5" stroke="none" text-anchor="middle" data-name="JavaScriptExpressionHandler">JavaScriptExpressionHandler</text></a>
+
+</g>
+</g>
+<g transform="translate(880, 634)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptExpressionHandler">
+<g transform="translate(8, 8)" fill="#33322E" data-name="JavaScriptExpressionHandler">
+
+</g>
+</g>
+<g transform="translate(880, 642)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptExpressionHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="JavaScriptExpressionHandler">
+<text x="0.0" y="13.5" stroke="none" data-name="JavaScriptExpressionHandler">+executeFunction(): Promise&lt;{ [key: string]: any</text>
+<text x="0.0" y="28.5" stroke="none" data-name="JavaScriptExpressionHandler">}&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="JavaScriptHandler">
+<g fill="#eee8d5" stroke="#33322E" data-name="JavaScriptHandler">
+<rect x="1315.0" y="603.0" height="85.0" width="395.0" data-name="JavaScriptHandler"></rect>
+<path d="M1315.0 634.0 L1710.0 634.0" fill="none" data-name="JavaScriptHandler"></path>
+<path d="M1315.0 642.0 L1710.0 642.0" fill="none" data-name="JavaScriptHandler"></path>
+</g>
+<g transform="translate(1315, 603)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="JavaScriptHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="JavaScriptHandler">
+<a id="../../src/handlers/JavaScriptHandler.ts.JavaScriptHandler" xlink:href="../../src/handlers/JavaScriptHandler.ts"><text x="189.5" y="13.5" stroke="none" text-anchor="middle" data-name="JavaScriptHandler">JavaScriptHandler</text></a>
+
+</g>
+</g>
+<g transform="translate(1315, 634)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptHandler">
+<g transform="translate(8, 8)" fill="#33322E" data-name="JavaScriptHandler">
+
+</g>
+</g>
+<g transform="translate(1315, 642)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="JavaScriptHandler">
+<text x="0.0" y="13.5" stroke="none" data-name="JavaScriptHandler">+executeFunction(): Promise&lt;{ [key: string]: any</text>
+<text x="0.0" y="28.5" stroke="none" data-name="JavaScriptHandler">}&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="RuntimeProcessHandler">
+<g fill="#eee8d5" stroke="#33322E" data-name="RuntimeProcessHandler">
+<rect x="1750.0" y="603.0" height="85.0" width="395.0" data-name="RuntimeProcessHandler"></rect>
+<path d="M1750.0 634.0 L2145.0 634.0" fill="none" data-name="RuntimeProcessHandler"></path>
+<path d="M1750.0 642.0 L2145.0 642.0" fill="none" data-name="RuntimeProcessHandler"></path>
+</g>
+<g transform="translate(1750, 603)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RuntimeProcessHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RuntimeProcessHandler">
+<a id="../../src/handlers/RuntimeProcessHandler.ts.RuntimeProcessHandler" xlink:href="../../src/handlers/RuntimeProcessHandler.ts"><text x="189.5" y="13.5" stroke="none" text-anchor="middle" data-name="RuntimeProcessHandler">RuntimeProcessHandler</text></a>
+
+</g>
+</g>
+<g transform="translate(1750, 634)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RuntimeProcessHandler">
+<g transform="translate(8, 8)" fill="#33322E" data-name="RuntimeProcessHandler">
+
+</g>
+</g>
+<g transform="translate(1750, 642)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RuntimeProcessHandler">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RuntimeProcessHandler">
+<text x="0.0" y="13.5" stroke="none" data-name="RuntimeProcessHandler">+executeFunction(): Promise&lt;{ [key: string]: any</text>
+<text x="0.0" y="28.5" stroke="none" data-name="RuntimeProcessHandler">}&gt;</text>
+
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

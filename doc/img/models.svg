@@ -1,0 +1,539 @@
+<svg version="1.1" baseProfile="full" width="1793.5" height="630.0" viewbox="0 0 1793.5 630" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<desc >#.interface: fill=lightblue
+#.enumeration: fill=lightgreen
+#.type: fill=lightgray
+[Argument|-_predicate: string;-_value: any|]
+[Composition||]
+[TermClass]&lt;:-[Composition]
+[Execution|-_function: Function|]
+[TermClass]&lt;:-[Execution]
+[Execution]  -  [Function]
+[Function||]
+[TermClass]&lt;:-[Function]
+[Implementation|#callable: Function;-_positionPropertyParameters: PositionPropertyParameter\[\];-_positionParameters: PositionParameter\[\];-_propertyParameters: PropertyParameter\[\];-_outputs: Output\[\]|+execute(): any]
+[JavaScriptImplementation||]
+[JavaScriptFunction||]
+[JavaScriptExpression|-_expression: string|+execute(): Promise&lt;any&gt;]
+[RuntimeProcess|-_baseCommand: string\[\];-_shell: string|-buildCommand(): string;+execute(): Promise&lt;any&gt;]
+[&lt;interface&gt;Parameter|+iri: string;+_type: string \| null|]
+[&lt;interface&gt;PositionParameter|+position: Number|]
+[&lt;interface&gt;PropertyParameter|+property: string|]
+[&lt;interface&gt;PositionPropertyParameter||]
+[&lt;interface&gt;Output||]
+[TermClass]&lt;:-[Implementation]
+[Implementation]&lt;:-[JavaScriptImplementation]
+[JavaScriptImplementation]&lt;:-[JavaScriptFunction]
+[JavaScriptImplementation]&lt;:-[JavaScriptExpression]
+[Implementation]&lt;:-[RuntimeProcess]
+[Parameter]&lt;:--[PositionParameter]
+[Parameter]&lt;:--[PropertyParameter]
+[PositionParameter]&lt;:--[PositionPropertyParameter]
+[PropertyParameter]&lt;:--[PositionPropertyParameter]
+[PropertyParameter]&lt;:--[Output]
+[Implementation]  - 0..* [PositionPropertyParameter]
+[Implementation]  - 0..* [PositionParameter]
+[Implementation]  - 0..* [PropertyParameter]
+[Implementation]  - 0..* [Output]
+[Mapping||]
+[TermClass]&lt;:-[Mapping]
+[Predicate||]
+[TermClass]&lt;:-[Predicate]
+[Return|-_predicate: string;-_value: any|]
+[TermClass|+_iri: Term|]</desc>
+<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
+<g transform="translate(0.5, 0.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
+<g stroke="transparent" fill="transparent">
+<rect x="0.0" y="0.0" height="630.0" width="1793.5" stroke="none"></rect>
+</g>
+<g transform="translate(8, 8)" fill="#33322E">
+<g transform="translate(20, 20)" fill="#eee8d5" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+<path d="M553.0 49.6 L57 105 L57 178 L57.0 178.0 " fill="none"></path>
+<path d="M553.6 54.9 L553.0 49.6 L552.4 44.3 L566.3 48.1 Z"></path>
+<path d="M553.2 54.7 L293.25 105 L293.25 166.5 L293.3 166.5 " fill="none"></path>
+<path d="M554.2 59.9 L553.2 54.7 L552.1 49.5 L566.3 52.2 Z"></path>
+<path d="M293.3 236.5 L293.25 298 L239.16411042944785 356 L239.2 356.0 " fill="none"></path>
+<path d="M553.0 51.0 L154 105 L154 201.5 L154 201.5 L154 298 L154 298 L199.01226993865032 356 L199.0 356.0 " fill="none"></path>
+<path d="M553.8 56.3 L553.0 51.0 L552.3 45.8 L566.3 49.3 Z"></path>
+<path d="M679.3 54.9 L933.25 105 L933.25 125 L933.3 125.0 " fill="none"></path>
+<path d="M680.4 49.7 L679.3 54.9 L678.3 60.2 L666.3 52.4 Z"></path>
+<path d="M678.1 248.5 L409.25 298 L409.25 356 L409.3 356.0 " fill="none"></path>
+<path d="M679.1 253.7 L678.1 248.5 L677.2 243.2 L691.3 246.1 Z"></path>
+<path d="M364.3 410.6 L291.5 461 L291.5 504 L291.5 504.0 " fill="none"></path>
+<path d="M367.4 415.0 L364.3 410.6 L361.3 406.2 L375.3 403.0 Z"></path>
+<path d="M454.2 410.6 L527 461 L527 481 L527.0 481.0 " fill="none"></path>
+<path d="M457.2 406.2 L454.2 410.6 L451.1 415.0 L443.2 403.0 Z"></path>
+<path d="M748.0 283.4 L715 298 L715 318 L715.0 318.0 " fill="none"></path>
+<path d="M750.2 288.3 L748.0 283.4 L745.9 278.5 L760.2 278.0 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M1495.9 227.7 L1237.5 298 L1191 344.5 L1191.0 344.5 " fill="none"></path>
+</g>
+<path d="M1497.3 232.9 L1495.9 227.7 L1494.5 222.6 L1508.8 224.2 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M1578.7 257.0 L1568.75 298 L1545.2147239263804 344.5 L1545.2 344.5 " fill="none"></path>
+</g>
+<path d="M1583.9 258.2 L1578.7 257.0 L1573.6 255.7 L1581.9 244.0 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M1249.3 405.7 L1446 461 L1298.0864661654136 504 L1298.1 504.0 " fill="none"></path>
+</g>
+<path d="M1250.8 400.6 L1249.3 405.7 L1247.9 410.9 L1236.5 402.1 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M1464.2 421.9 L1406 461 L1283.951127819549 504 L1284.0 504.0 " fill="none"></path>
+</g>
+<path d="M1467.2 426.4 L1464.2 421.9 L1461.3 417.5 L1475.3 414.5 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M1622.3 419.0 L1723 461 L1710.0676691729323 504 L1710.1 504.0 " fill="none"></path>
+</g>
+<path d="M1624.4 414.1 L1622.3 419.0 L1620.3 423.9 L1610.0 413.9 Z"></path>
+<text x="1111.3" y="497.9" stroke="none">0..*</text>
+<path d="M880.7 278.0 L867 298 L867 379.5 L867 379.5 L867 461 L867 461 L1103.25 505.85546038543896 L1103.3 505.9 " fill="none"></path>
+<text x="1146.7" y="336.5" stroke="none">0..*</text>
+<path d="M1077.9 278.0 L1115.75 298 L1138.7147239263804 344.5 L1138.7 344.5 " fill="none"></path>
+<text x="1453.0" y="344.6" stroke="none">0..*</text>
+<path d="M1175.3 269.3 L1277.5 298 L1445 352.605 L1445.0 352.6 " fill="none"></path>
+<text x="1692.3" y="496.0" stroke="none">0..*</text>
+<path d="M1175.3 234.1 L1650 298 L1650 379.5 L1650 379.5 L1650 461 L1650 461 L1684.2706766917292 504 L1684.3 504.0 " fill="none"></path>
+<path d="M679.5 48.3 L1295.75 105 L1295.75 178 L1295.8 178.0 " fill="none"></path>
+<path d="M680.0 43.0 L679.5 48.3 L679.0 53.6 L666.3 47.1 Z"></path>
+<path d="M679.5 47.4 L1423.25 105 L1423.25 178 L1423.3 178.0 " fill="none"></path>
+<path d="M680.0 42.1 L679.5 47.4 L679.1 52.7 L666.3 46.4 Z"></path>
+<g data-name="Argument">
+<g fill="#eee8d5" stroke="#33322E" data-name="Argument">
+<rect x="166.0" y="0.0" height="85.0" width="160.0" data-name="Argument"></rect>
+<path d="M166.0 31.0 L326.0 31.0" fill="none" data-name="Argument"></path>
+<path d="M166.0 77.0 L326.0 77.0" fill="none" data-name="Argument"></path>
+</g>
+<g transform="translate(166, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Argument">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Argument">
+<a id="../../src/models/Argument.ts.Argument" xlink:href="../../src/models/Argument.ts"><text x="72.0" y="13.5" stroke="none" text-anchor="middle" data-name="Argument">Argument</text></a>
+
+</g>
+</g>
+<g transform="translate(166, 31)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Argument">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Argument">
+<text x="0.0" y="13.5" stroke="none" data-name="Argument">-_predicate: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Argument">-_value: any</text>
+
+</g>
+</g>
+<g transform="translate(166, 77)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Argument">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Argument">
+
+</g>
+</g>
+</g>
+<g data-name="Composition">
+<g fill="#eee8d5" stroke="#33322E" data-name="Composition">
+<rect x="0.0" y="178.0" height="47.0" width="114.0" data-name="Composition"></rect>
+<path d="M0.0 209.0 L114.0 209.0" fill="none" data-name="Composition"></path>
+<path d="M0.0 217.0 L114.0 217.0" fill="none" data-name="Composition"></path>
+</g>
+<g transform="translate(0, 178)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Composition">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Composition">
+<a id="../../src/models/Composition.ts.Composition" xlink:href="../../src/models/Composition.ts"><text x="49.0" y="13.5" stroke="none" text-anchor="middle" data-name="Composition">Composition</text></a>
+
+</g>
+</g>
+<g transform="translate(0, 209)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Composition">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Composition">
+
+</g>
+</g>
+<g transform="translate(0, 217)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Composition">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Composition">
+
+</g>
+</g>
+</g>
+<g data-name="Execution">
+<g fill="#eee8d5" stroke="#33322E" data-name="Execution">
+<rect x="207.0" y="167.0" height="70.0" width="173.0" data-name="Execution"></rect>
+<path d="M207.0 198.0 L380.0 198.0" fill="none" data-name="Execution"></path>
+<path d="M207.0 229.0 L380.0 229.0" fill="none" data-name="Execution"></path>
+</g>
+<g transform="translate(207, 167)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Execution">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Execution">
+<a id="../../src/models/Execution.ts.Execution" xlink:href="../../src/models/Execution.ts"><text x="78.5" y="13.5" stroke="none" text-anchor="middle" data-name="Execution">Execution</text></a>
+
+</g>
+</g>
+<g transform="translate(207, 198)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Execution">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Execution">
+<text x="0.0" y="13.5" stroke="none" data-name="Execution">-_function: Function</text>
+
+</g>
+</g>
+<g transform="translate(207, 229)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Execution">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Execution">
+
+</g>
+</g>
+</g>
+<g data-name="Function">
+<g fill="#eee8d5" stroke="#33322E" data-name="Function">
+<rect x="175.0" y="356.0" height="47.0" width="84.0" data-name="Function"></rect>
+<path d="M175.0 387.0 L259.0 387.0" fill="none" data-name="Function"></path>
+<path d="M175.0 395.0 L259.0 395.0" fill="none" data-name="Function"></path>
+</g>
+<g transform="translate(175, 356)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Function">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Function">
+<a id="../../src/models/Function.ts.Function" xlink:href="../../src/models/Function.ts"><text x="34.0" y="13.5" stroke="none" text-anchor="middle" data-name="Function">Function</text></a>
+
+</g>
+</g>
+<g transform="translate(175, 387)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Function">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Function">
+
+</g>
+</g>
+<g transform="translate(175, 395)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Function">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Function">
+
+</g>
+</g>
+</g>
+<g data-name="Implementation">
+<g fill="#eee8d5" stroke="#33322E" data-name="Implementation">
+<rect x="691.0" y="125.0" height="153.0" width="484.0" data-name="Implementation"></rect>
+<path d="M691.0 156.0 L1175.0 156.0" fill="none" data-name="Implementation"></path>
+<path d="M691.0 247.0 L1175.0 247.0" fill="none" data-name="Implementation"></path>
+</g>
+<g transform="translate(691, 125)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Implementation">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Implementation">
+<a id="../../src/models/Implementation.ts.Implementation" xlink:href="../../src/models/Implementation.ts"><text x="234.0" y="13.5" stroke="none" text-anchor="middle" data-name="Implementation">Implementation</text></a>
+
+</g>
+</g>
+<g transform="translate(691, 156)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Implementation">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Implementation">
+<text x="0.0" y="13.5" stroke="none" data-name="Implementation">#callable: Function</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Implementation">-_positionPropertyParameters: PositionPropertyParameter[]</text>
+<text x="0.0" y="43.5" stroke="none" data-name="Implementation">-_positionParameters: PositionParameter[]</text>
+<text x="0.0" y="58.5" stroke="none" data-name="Implementation">-_propertyParameters: PropertyParameter[]</text>
+<text x="0.0" y="73.5" stroke="none" data-name="Implementation">-_outputs: Output[]</text>
+
+</g>
+</g>
+<g transform="translate(691, 247)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Implementation">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Implementation">
+<text x="0.0" y="13.5" stroke="none" data-name="Implementation">+execute(): any</text>
+
+</g>
+</g>
+</g>
+<g data-name="JavaScriptImplementation">
+<g fill="#eee8d5" stroke="#33322E" data-name="JavaScriptImplementation">
+<rect x="299.0" y="356.0" height="47.0" width="220.0" data-name="JavaScriptImplementation"></rect>
+<path d="M299.0 387.0 L519.0 387.0" fill="none" data-name="JavaScriptImplementation"></path>
+<path d="M299.0 395.0 L519.0 395.0" fill="none" data-name="JavaScriptImplementation"></path>
+</g>
+<g transform="translate(299, 356)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="JavaScriptImplementation">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="JavaScriptImplementation">
+<a id="../../src/models/Implementation.ts.JavaScriptImplementation" xlink:href="../../src/models/Implementation.ts"><text x="102.0" y="13.5" stroke="none" text-anchor="middle" data-name="JavaScriptImplementation">JavaScriptImplementation</text></a>
+
+</g>
+</g>
+<g transform="translate(299, 387)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptImplementation">
+<g transform="translate(8, 8)" fill="#33322E" data-name="JavaScriptImplementation">
+
+</g>
+</g>
+<g transform="translate(299, 395)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptImplementation">
+<g transform="translate(8, 8)" fill="#33322E" data-name="JavaScriptImplementation">
+
+</g>
+</g>
+</g>
+<g data-name="JavaScriptFunction">
+<g fill="#eee8d5" stroke="#33322E" data-name="JavaScriptFunction">
+<rect x="208.0" y="504.0" height="47.0" width="167.0" data-name="JavaScriptFunction"></rect>
+<path d="M208.0 535.0 L375.0 535.0" fill="none" data-name="JavaScriptFunction"></path>
+<path d="M208.0 543.0 L375.0 543.0" fill="none" data-name="JavaScriptFunction"></path>
+</g>
+<g transform="translate(208, 504)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="JavaScriptFunction">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="JavaScriptFunction">
+<a id="../../src/models/Implementation.ts.JavaScriptFunction" xlink:href="../../src/models/Implementation.ts"><text x="75.5" y="13.5" stroke="none" text-anchor="middle" data-name="JavaScriptFunction">JavaScriptFunction</text></a>
+
+</g>
+</g>
+<g transform="translate(208, 535)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptFunction">
+<g transform="translate(8, 8)" fill="#33322E" data-name="JavaScriptFunction">
+
+</g>
+</g>
+<g transform="translate(208, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptFunction">
+<g transform="translate(8, 8)" fill="#33322E" data-name="JavaScriptFunction">
+
+</g>
+</g>
+</g>
+<g data-name="JavaScriptExpression">
+<g fill="#eee8d5" stroke="#33322E" data-name="JavaScriptExpression">
+<rect x="415.0" y="481.0" height="93.0" width="224.0" data-name="JavaScriptExpression"></rect>
+<path d="M415.0 512.0 L639.0 512.0" fill="none" data-name="JavaScriptExpression"></path>
+<path d="M415.0 543.0 L639.0 543.0" fill="none" data-name="JavaScriptExpression"></path>
+</g>
+<g transform="translate(415, 481)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="JavaScriptExpression">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="JavaScriptExpression">
+<a id="../../src/models/Implementation.ts.JavaScriptExpression" xlink:href="../../src/models/Implementation.ts"><text x="104.0" y="13.5" stroke="none" text-anchor="middle" data-name="JavaScriptExpression">JavaScriptExpression</text></a>
+
+</g>
+</g>
+<g transform="translate(415, 512)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptExpression">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="JavaScriptExpression">
+<text x="0.0" y="13.5" stroke="none" data-name="JavaScriptExpression">-_expression: string</text>
+
+</g>
+</g>
+<g transform="translate(415, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="JavaScriptExpression">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="JavaScriptExpression">
+<text x="0.0" y="13.5" stroke="none" data-name="JavaScriptExpression">+execute(): Promise&lt;any&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="RuntimeProcess">
+<g fill="#eee8d5" stroke="#33322E" data-name="RuntimeProcess">
+<rect x="603.0" y="318.0" height="123.0" width="224.0" data-name="RuntimeProcess"></rect>
+<path d="M603.0 349.0 L827.0 349.0" fill="none" data-name="RuntimeProcess"></path>
+<path d="M603.0 395.0 L827.0 395.0" fill="none" data-name="RuntimeProcess"></path>
+</g>
+<g transform="translate(603, 318)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="RuntimeProcess">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RuntimeProcess">
+<a id="../../src/models/Implementation.ts.RuntimeProcess" xlink:href="../../src/models/Implementation.ts"><text x="104.0" y="13.5" stroke="none" text-anchor="middle" data-name="RuntimeProcess">RuntimeProcess</text></a>
+
+</g>
+</g>
+<g transform="translate(603, 349)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RuntimeProcess">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RuntimeProcess">
+<text x="0.0" y="13.5" stroke="none" data-name="RuntimeProcess">-_baseCommand: string[]</text>
+<text x="0.0" y="28.5" stroke="none" data-name="RuntimeProcess">-_shell: string</text>
+
+</g>
+</g>
+<g transform="translate(603, 395)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RuntimeProcess">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RuntimeProcess">
+<text x="0.0" y="13.5" stroke="none" data-name="RuntimeProcess">-buildCommand(): string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="RuntimeProcess">+execute(): Promise&lt;any&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="Parameter">
+<g fill="lightblue" stroke="#33322E" data-name="Parameter">
+<rect x="1509.0" y="159.0" height="85.0" width="167.0" data-name="Parameter"></rect>
+<path d="M1509.0 190.0 L1676.0 190.0" fill="none" data-name="Parameter"></path>
+<path d="M1509.0 236.0 L1676.0 236.0" fill="none" data-name="Parameter"></path>
+</g>
+<g transform="translate(1509, 159)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Parameter">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Parameter">
+<a id="../../src/models/Implementation.ts.Parameter" xlink:href="../../src/models/Implementation.ts"><text x="75.5" y="13.5" stroke="none" text-anchor="middle" data-name="Parameter">Parameter</text></a>
+
+</g>
+</g>
+<g transform="translate(1509, 190)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Parameter">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Parameter">
+<text x="0.0" y="13.5" stroke="none" data-name="Parameter">+iri: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Parameter">+_type: string | null</text>
+
+</g>
+</g>
+<g transform="translate(1509, 236)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Parameter">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Parameter">
+
+</g>
+</g>
+</g>
+<g data-name="PositionParameter">
+<g fill="lightblue" stroke="#33322E" data-name="PositionParameter">
+<rect x="1076.0" y="345.0" height="70.0" width="161.0" data-name="PositionParameter"></rect>
+<path d="M1076.0 376.0 L1237.0 376.0" fill="none" data-name="PositionParameter"></path>
+<path d="M1076.0 407.0 L1237.0 407.0" fill="none" data-name="PositionParameter"></path>
+</g>
+<g transform="translate(1076, 345)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PositionParameter">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PositionParameter">
+<a id="../../src/models/Implementation.ts.PositionParameter" xlink:href="../../src/models/Implementation.ts"><text x="72.5" y="13.5" stroke="none" text-anchor="middle" data-name="PositionParameter">PositionParameter</text></a>
+
+</g>
+</g>
+<g transform="translate(1076, 376)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PositionParameter">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PositionParameter">
+<text x="0.0" y="13.5" stroke="none" data-name="PositionParameter">+position: Number</text>
+
+</g>
+</g>
+<g transform="translate(1076, 407)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PositionParameter">
+<g transform="translate(8, 8)" fill="#33322E" data-name="PositionParameter">
+
+</g>
+</g>
+</g>
+<g data-name="PropertyParameter">
+<g fill="lightblue" stroke="#33322E" data-name="PropertyParameter">
+<rect x="1445.0" y="345.0" height="70.0" width="165.0" data-name="PropertyParameter"></rect>
+<path d="M1445.0 376.0 L1610.0 376.0" fill="none" data-name="PropertyParameter"></path>
+<path d="M1445.0 407.0 L1610.0 407.0" fill="none" data-name="PropertyParameter"></path>
+</g>
+<g transform="translate(1445, 345)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PropertyParameter">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PropertyParameter">
+<a id="../../src/models/Implementation.ts.PropertyParameter" xlink:href="../../src/models/Implementation.ts"><text x="74.5" y="13.5" stroke="none" text-anchor="middle" data-name="PropertyParameter">PropertyParameter</text></a>
+
+</g>
+</g>
+<g transform="translate(1445, 376)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PropertyParameter">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PropertyParameter">
+<text x="0.0" y="13.5" stroke="none" data-name="PropertyParameter">+property: string</text>
+
+</g>
+</g>
+<g transform="translate(1445, 407)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PropertyParameter">
+<g transform="translate(8, 8)" fill="#33322E" data-name="PropertyParameter">
+
+</g>
+</g>
+</g>
+<g data-name="PositionPropertyParameter">
+<g fill="lightblue" stroke="#33322E" data-name="PositionPropertyParameter">
+<rect x="1103.0" y="504.0" height="47.0" width="228.0" data-name="PositionPropertyParameter"></rect>
+<path d="M1103.0 535.0 L1331.0 535.0" fill="none" data-name="PositionPropertyParameter"></path>
+<path d="M1103.0 543.0 L1331.0 543.0" fill="none" data-name="PositionPropertyParameter"></path>
+</g>
+<g transform="translate(1103, 504)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PositionPropertyParameter">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PositionPropertyParameter">
+<a id="../../src/models/Implementation.ts.PositionPropertyParameter" xlink:href="../../src/models/Implementation.ts"><text x="106.0" y="13.5" stroke="none" text-anchor="middle" data-name="PositionPropertyParameter">PositionPropertyParameter</text></a>
+
+</g>
+</g>
+<g transform="translate(1103, 535)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PositionPropertyParameter">
+<g transform="translate(8, 8)" fill="#33322E" data-name="PositionPropertyParameter">
+
+</g>
+</g>
+<g transform="translate(1103, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PositionPropertyParameter">
+<g transform="translate(8, 8)" fill="#33322E" data-name="PositionPropertyParameter">
+
+</g>
+</g>
+</g>
+<g data-name="Output">
+<g fill="lightblue" stroke="#33322E" data-name="Output">
+<rect x="1669.0" y="504.0" height="47.0" width="69.0" data-name="Output"></rect>
+<path d="M1669.0 535.0 L1738.0 535.0" fill="none" data-name="Output"></path>
+<path d="M1669.0 543.0 L1738.0 543.0" fill="none" data-name="Output"></path>
+</g>
+<g transform="translate(1669, 504)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Output">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Output">
+<a id="../../src/models/Implementation.ts.Output" xlink:href="../../src/models/Implementation.ts"><text x="26.5" y="13.5" stroke="none" text-anchor="middle" data-name="Output">Output</text></a>
+
+</g>
+</g>
+<g transform="translate(1669, 535)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Output">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Output">
+
+</g>
+</g>
+<g transform="translate(1669, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Output">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Output">
+
+</g>
+</g>
+</g>
+<g data-name="Mapping">
+<g fill="#eee8d5" stroke="#33322E" data-name="Mapping">
+<rect x="1254.0" y="178.0" height="47.0" width="84.0" data-name="Mapping"></rect>
+<path d="M1254.0 209.0 L1338.0 209.0" fill="none" data-name="Mapping"></path>
+<path d="M1254.0 217.0 L1338.0 217.0" fill="none" data-name="Mapping"></path>
+</g>
+<g transform="translate(1254, 178)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Mapping">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Mapping">
+<a id="../../src/models/Mapping.ts.Mapping" xlink:href="../../src/models/Mapping.ts"><text x="34.0" y="13.5" stroke="none" text-anchor="middle" data-name="Mapping">Mapping</text></a>
+
+</g>
+</g>
+<g transform="translate(1254, 209)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Mapping">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Mapping">
+
+</g>
+</g>
+<g transform="translate(1254, 217)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Mapping">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Mapping">
+
+</g>
+</g>
+</g>
+<g data-name="Predicate">
+<g fill="#eee8d5" stroke="#33322E" data-name="Predicate">
+<rect x="1378.0" y="178.0" height="47.0" width="91.0" data-name="Predicate"></rect>
+<path d="M1378.0 209.0 L1469.0 209.0" fill="none" data-name="Predicate"></path>
+<path d="M1378.0 217.0 L1469.0 217.0" fill="none" data-name="Predicate"></path>
+</g>
+<g transform="translate(1378, 178)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Predicate">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Predicate">
+<a id="../../src/models/Predicate.ts.Predicate" xlink:href="../../src/models/Predicate.ts"><text x="37.5" y="13.5" stroke="none" text-anchor="middle" data-name="Predicate">Predicate</text></a>
+
+</g>
+</g>
+<g transform="translate(1378, 209)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Predicate">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Predicate">
+
+</g>
+</g>
+<g transform="translate(1378, 217)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Predicate">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Predicate">
+
+</g>
+</g>
+</g>
+<g data-name="Return">
+<g fill="#eee8d5" stroke="#33322E" data-name="Return">
+<rect x="366.0" y="0.0" height="85.0" width="160.0" data-name="Return"></rect>
+<path d="M366.0 31.0 L526.0 31.0" fill="none" data-name="Return"></path>
+<path d="M366.0 77.0 L526.0 77.0" fill="none" data-name="Return"></path>
+</g>
+<g transform="translate(366, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Return">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Return">
+<a id="../../src/models/Return.ts.Return" xlink:href="../../src/models/Return.ts"><text x="72.0" y="13.5" stroke="none" text-anchor="middle" data-name="Return">Return</text></a>
+
+</g>
+</g>
+<g transform="translate(366, 31)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Return">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Return">
+<text x="0.0" y="13.5" stroke="none" data-name="Return">-_predicate: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Return">-_value: any</text>
+
+</g>
+</g>
+<g transform="translate(366, 77)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Return">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Return">
+
+</g>
+</g>
+</g>
+<g data-name="TermClass">
+<g fill="#eee8d5" stroke="#33322E" data-name="TermClass">
+<rect x="566.0" y="8.0" height="70.0" width="100.0" data-name="TermClass"></rect>
+<path d="M566.0 39.0 L666.0 39.0" fill="none" data-name="TermClass"></path>
+<path d="M566.0 70.0 L666.0 70.0" fill="none" data-name="TermClass"></path>
+</g>
+<g transform="translate(566, 8)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="TermClass">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="TermClass">
+<a id="../../src/models/TermClass.ts.TermClass" xlink:href="../../src/models/TermClass.ts"><text x="42.0" y="13.5" stroke="none" text-anchor="middle" data-name="TermClass">TermClass</text></a>
+
+</g>
+</g>
+<g transform="translate(566, 39)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="TermClass">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="TermClass">
+<text x="0.0" y="13.5" stroke="none" data-name="TermClass">+_iri: Term</text>
+
+</g>
+</g>
+<g transform="translate(566, 70)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="TermClass">
+<g transform="translate(8, 8)" fill="#33322E" data-name="TermClass">
+
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>
