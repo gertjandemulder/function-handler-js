@@ -8,7 +8,7 @@ import * as path from 'path';
 import { RuntimeProcessHandler } from './handlers/RuntimeProcessHandler';
 import exp from "constants";
 import * as $rdf from 'rdflib';
-import {PositionParameter, PropertyParameter, RuntimeProcess} from "./models/Implementation";
+import {PositionParameter, PositionPropertyParameter, PropertyParameter, RuntimeProcess} from "./models/Implementation";
 import {JavaScriptExpressionHandler} from "./handlers/JavaScriptExpressionHandler";
 function readFile(path) {
   return fs.readFileSync(path, { encoding: 'utf-8' });
@@ -45,6 +45,14 @@ const testPropertyParameter = (propertyParameters: PropertyParameter[], expected
   expect(propertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0].property).to.equal(expectedParameterValue.property);
   expect(propertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0]._type).to.equal(expectedParameterValue._type);
 }
+
+const testPositionPropertyParameter = (positionPropertyParameters: PositionPropertyParameter[], expectedParameterValue: PositionPropertyParameter) => {
+  expect(positionPropertyParameters.map(p => p.iri)).to.contain(expectedParameterValue.iri);
+  expect(positionPropertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0].position).to.equal(expectedParameterValue.position.toString());
+  expect(positionPropertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0].property).to.equal(expectedParameterValue.property.toString());
+  expect(positionPropertyParameters.filter(p=>p.iri===expectedParameterValue.iri)[0]._type).to.equal(expectedParameterValue._type);
+}
+
 describe('RuntimeProcess: lsl.fno.ttl', function () {
   let handler;
   before(async ()=>{
@@ -246,16 +254,26 @@ describe('RuntimeProcess test (echo): fno-cwl/example01/cwl2fno-expected-result-
     const rtp: RuntimeProcess = handler.parseRuntimeProcessImplementation(imp.subject, handler.graphHandler);
 
     // Expected: t_echo:message - position: 0
+    const expectedNoTrailingNewLineParameter: PositionPropertyParameter = {
+      iri: `${ns.t_echo}noTrailingNewLine`,
+      position: 0,
+      property: "-n",
+      _type: "TODO" // TODO!
+    }
+
+    // Expected: t_echo:message - position: 1
     const expectedMessageParameter: PositionParameter = {
       iri: `${ns.t_echo}message`,
-      position: 0,
+      position: 1,
       _type: "TODO" // TODO!
     }
 
     // Tests
     expect(rtp.positionParameters).to.have.length(1);
     expect(rtp.propertyParameters).to.have.length(0);
+    expect(rtp.positionPropertyParameters).to.have.length(1);
     testPositionParameter(rtp.positionParameters, expectedMessageParameter);
+    testPositionPropertyParameter(rtp.positionPropertyParameters, expectedNoTrailingNewLineParameter);
   });
 
   it('Correctly executes RuntimeProcess',async ()=>{
