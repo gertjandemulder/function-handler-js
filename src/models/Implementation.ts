@@ -21,6 +21,7 @@ export interface Output extends PropertyParameter {}
 
 export class Implementation extends TermClass {
     protected callable: Function;
+    private _positionPropertyParameters: PositionPropertyParameter[];
     private _positionParameters: PositionParameter[];
     private _propertyParameters: PropertyParameter[];
     private _outputs: Output[];
@@ -29,7 +30,7 @@ export class Implementation extends TermClass {
                 positionParameters: PositionParameter[] = [],
                 propertyParameters: PropertyParameter[] = [],
                 outputs: Output[] = []
-    ) {
+        , positionPropertyParameters: PositionPropertyParameter[] = []) {
         super(iri);
         this.callable = () => {
             throw Error('Callable Not Implemented!');
@@ -39,6 +40,7 @@ export class Implementation extends TermClass {
             .sort((a: PositionParameter, b: PositionParameter) => a.position < b.position ? -1 : 1)
         this._propertyParameters = propertyParameters;
         this._outputs = outputs;
+        this._positionPropertyParameters = positionPropertyParameters;
     }
 
 
@@ -80,8 +82,8 @@ export class JavaScriptFunction extends JavaScriptImplementation {
 export class JavaScriptExpression extends JavaScriptImplementation {
     private readonly _expression: string;
 
-    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[], expression: string) {
-        super(iri, positionParameters, propertyParameters, outputs);
+    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[], positionPropertyParameters: PositionPropertyParameter[], expression: string) {
+        super(iri, positionParameters, propertyParameters, outputs, positionPropertyParameters);
         this._expression = expression;
     }
 
@@ -119,8 +121,8 @@ export class RuntimeProcess extends Implementation {
     protected baseCommand: string[];
 
 
-    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[], baseCommand: string[]) {
-        super(iri, positionParameters, propertyParameters, outputs);
+    constructor(iri, positionParameters: PositionParameter[], propertyParameters: PropertyParameter[], outputs: Output[], positionPropertyParameters: PositionPropertyParameter[], baseCommand: string[]) {
+        super(iri, positionParameters, propertyParameters, outputs, positionPropertyParameters);
         this.baseCommand = baseCommand;
     }
 
