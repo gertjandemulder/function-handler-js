@@ -226,18 +226,35 @@ export class FunctionHandler {
     const mappings = gh.filter.po(fno_implementation, s)
     const [m] = mappings;
     const m_parameterMappings = gh.filter.sp(m.subject, fno_parameterMapping).map(st=>st.object)
-    const m_positionParameterMappings = m_parameterMappings.filter((mpm)=>
+    // Filter out PositionPropertyParameterMappings
+    const m_positionPropertyParameterMappings = m_parameterMappings.filter( x => {
+      const A = gh.filter.spo(x,rdf_type, fnom_PositionParameterMapping);
+      const B = gh.filter.spo(x,rdf_type, fnom_PropertyParameterMapping);
+      return (A.length === 1) && (B.length === 1)
+    })
+    // Filter out PositionParameterMappings
+    const m_positionParameterMappings = m_parameterMappings
+        .filter((mpm) => !m_positionPropertyParameterMappings.includes(mpm)) // exclude PositionPropertyParameterMappings
+        .filter((mpm)=>
         gh.filter.spo(
             mpm,
             rdf_type,
             fnom_PositionParameterMapping).length === 1
     )
-    const m_propertyParameterMappings = m_parameterMappings.filter((mpm)=>
+    // Filter out PropertyParameterMappings
+    const m_propertyParameterMappings = m_parameterMappings
+        .filter((mpm) => !m_positionPropertyParameterMappings.includes(mpm)) // exclude PositionPropertyParameterMappings
+        .filter((mpm)=>
         gh.filter.spo(
             mpm,
             rdf_type,
             fnom_PropertyParameterMapping).length === 1
     )
+
+    if( (m_positionParameterMappings.length
+        + m_propertyParameterMappings.length
+        + m_positionPropertyParameterMappings.length) !== m_parameterMappings.length )
+      throw Error('ParameterMappings are not correctly processed')
 
     const [mapping,] = gh.match(null,$rdf.sym(`${prefixes.fno}implementation`),s);
     const returnMappings = gh.match(mapping.subject,$rdf.sym(`${prefixes.fno}returnMapping`),null).map(st=>st.object)
@@ -265,6 +282,23 @@ export class FunctionHandler {
       // TODO: add fno:type
       return {
         iri: predicate,
+        property,
+        _type: "TODO" // TODO: add fno:type
+      }
+    })
+
+    // PositionProperty Parameters
+    const positionPropertyParameters: PositionPropertyParameter[] = m_positionPropertyParameterMappings.map(ppm => {
+      const [property] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}implementationProperty`)).map(st => st.object).map(o => o.value)
+      const [position] = gh.match(ppm,$rdf.sym(`${prefixes.fnom}implementationParameterPosition`),null).map(st=>st.object).map(o=>o.value);
+
+      const [functionParameter] = gh.filter.sp(ppm.subject, $rdf.sym(`${prefixes.fnom}functionParameter`)).map(st => st.object).map(o => o.value)
+      const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`)).map(st => st.object).map(o=>o.value);
+
+      // TODO: add fno:type
+      return {
+        iri: predicate,
+        position,
         property,
         _type: "TODO" // TODO: add fno:type
       }
