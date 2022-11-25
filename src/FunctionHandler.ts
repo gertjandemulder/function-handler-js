@@ -166,7 +166,7 @@ export class FunctionHandler {
       const [predicate] = gh.filter.sp($rdf.sym(functionParameter), $rdf.sym(`${prefixes.fno}predicate`))
           .map(st => st.object)
           .map(o => o.value)
-      
+
       return {
         iri: predicate,
         property,
@@ -187,10 +187,12 @@ export class FunctionHandler {
     })
 
     // Create (executable) JSExpression instance
-    const jsExpressionInstance = new JavaScriptExpression(s.value,
+    const jsExpressionInstance = new JavaScriptExpression(
+        s.value,
         positionParameters,
         propertyParameters,
         outputs,
+        [],
         expression
     )
     return jsExpressionInstance
@@ -321,6 +323,7 @@ export class FunctionHandler {
         positionParameters,
         propertyParameters,
         outputs,
+        positionPropertyParameters,
         [baseCommand]
         )
     return rtpInstance
