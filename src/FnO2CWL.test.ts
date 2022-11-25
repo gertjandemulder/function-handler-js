@@ -457,7 +457,7 @@ describe('Workflow test: fno-cwl/example01/cwl2fno-expected-result-concrete-wf.t
       [prefix(ns.wf, 'message')]: 'abc'
     }
     const wfResult = await handler.executeFunction(fWf, wfArgMap);
-    expect(wfResult[prefix(ns.wf, 'wf_output')]).to.equal('ABC\n');
+    expect(wfResult[prefix(ns.wf, 'wf_output')]).to.equal('ABC');
 
   });
 
